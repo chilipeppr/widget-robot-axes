@@ -518,10 +518,12 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
             var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
             var that = this;
+            var prefix = "";
+            prefix = "https://raw.githubusercontent.com/chilipeppr/widget-robot-axes/master/";
             arr.forEach(element => {
                 var clone = elTmplt.clone();
                 clone.id = "com-chilipeppr-widget-robot-axes-" + element;
-                clone.find('.widget-robot-axes-img').css('background-image', "url('" + element + ".jpg')");
+                clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
                 clone.find('.axis-name').text(that.titleCase(element));
                 elTmplt.parent().append(clone);
             });
