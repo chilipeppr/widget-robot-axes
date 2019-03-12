@@ -1,13 +1,13 @@
-#com-chilipeppr-widget-xyz-body {
+#com-chilipeppr-widget-robot-axes-body {
     padding:2px;
 }
-#com-chilipeppr-widget-xyz-body .col {
+#com-chilipeppr-widget-robot-axes-body .col {
     padding:0;
 }
-#com-chilipeppr-widget-xyz-ftr .hilite {
+#com-chilipeppr-widget-robot-axes-ftr .hilite {
     background-color: #dff0d8;
 }
-#com-chilipeppr-widget-xyz-ftr .hiliteblue {
+#com-chilipeppr-widget-robot-axes-ftr .hiliteblue {
     background-color: #d9edf7;
 }
 .col {
@@ -26,57 +26,57 @@
     font-size:9px;
     padding:1px 3px;
 }
-.com-chilipeppr-xyz-pos {
+.widget-robot-axes-pos {
     padding:0 0 0 0px;
     margin:0;
 }
-.com-chilipeppr-xyz-label {
+.widget-robot-axes-label {
     padding:0;
     margin:0;
 }
-.com-chilipeppr-xyz-label-well h2 {
+.widget-robot-axes-label-well h2 {
     text-align: center;
 }
-#com-chilipeppr-widget-xyz-body .com-chilipeppr-xyz-label-well {
+#com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     margin-bottom: 0px;
     margin-right: 2px;
 }
-#com-chilipeppr-widget-xyz-body .com-chilipeppr-xyz-well {
+#com-chilipeppr-widget-robot-axes-body .widget-robot-axes-well {
     overflow: hidden;
     /* position: relative; */
     margin-bottom: 0px;
     padding: 3px 16px;
 }
-#com-chilipeppr-widget-xyz-body .com-chilipeppr-xyz-pos-well {
+#com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-#com-chilipeppr-widget-xyz-body .com-chilipeppr-xyz-menu {
+#com-chilipeppr-widget-robot-axes-body .widget-robot-axes-menu {
     /* z-index: 2; */
     position: absolute;
     left: 3px;
     top: 3px;
 }
-.com-chilipeppr-xyz-menu > .btn {
+.widget-robot-axes-menu > .btn {
     border:0;
 }
-.com-chilipeppr-xyz-dim {
+.widget-robot-axes-dim {
     position: absolute;
     top:0px;
     right:14px;
     font-size:13px;
 }
-#com-chilipeppr-widget-xyz-ftr {
+#com-chilipeppr-widget-robot-axes-ftr {
     overflow-x: visible;
     overflow-y: visible;
 }
-#com-chilipeppr-widget-xyz-ftr:focus {
+#com-chilipeppr-widget-robot-axes-ftr:focus {
     background-color: #428bca;
 }
-#com-chilipeppr-widget-xyz-ftr.panel-primary {
+#com-chilipeppr-widget-robot-axes-ftr.panel-primary {
     background-color: #428bca;
 }
 .xyz-dimmed {
@@ -114,41 +114,41 @@
     background:none;
     border:none;
 }
-#com-chilipeppr-widget-xyz .btnIconWarning {
+#com-chilipeppr-widget-robot-axes .btnIconWarning {
     color: #f0ad4e;
 }
-#com-chilipeppr-widget-xyz .dbltall {
+#com-chilipeppr-widget-robot-axes .dbltall {
     height:68px;
 }
-#com-chilipeppr-widget-xyz .moveby {
+#com-chilipeppr-widget-robot-axes .moveby {
     position:absolute;
     top:0;
     left:0;
     border:0px red solid;
 }
-#com-chilipeppr-widget-xyz .jogincrements-small {
+#com-chilipeppr-widget-robot-axes .jogincrements-small {
     display:none;
 }
 /* View Small Mode */
- #com-chilipeppr-widget-xyz.size-small .com-chilipeppr-xyz-label, #com-chilipeppr-widget-xyz.size-small .com-chilipeppr-xyz-pos {
+ #com-chilipeppr-widget-robot-axes.size-small .widget-robot-axes-label, #com-chilipeppr-widget-robot-axes.size-small .widget-robot-axes-pos {
     font-size:16px;
 }
-#com-chilipeppr-widget-xyz.size-small #com-chilipeppr-widget-xyz-ftr, #com-chilipeppr-widget-xyz.size-small #com-chilipeppr-widget-xyz-ftr .btn {
+#com-chilipeppr-widget-robot-axes.size-small #com-chilipeppr-widget-robot-axes-ftr, #com-chilipeppr-widget-robot-axes.size-small #com-chilipeppr-widget-robot-axes-ftr .btn {
     font-size:9px;
 }
-#com-chilipeppr-widget-xyz.size-small .dbltall {
+#com-chilipeppr-widget-robot-axes.size-small .dbltall {
     height:51px;
 }
-#com-chilipeppr-widget-xyz.size-small .jogincrements-normal {
+#com-chilipeppr-widget-robot-axes.size-small .jogincrements-normal {
     display:none;
 }
-#com-chilipeppr-widget-xyz.size-small .jogincrements-small {
+#com-chilipeppr-widget-robot-axes.size-small .jogincrements-small {
     display:initial;
 }
-#com-chilipeppr-widget-xyz.size-small .moveby {
+#com-chilipeppr-widget-robot-axes.size-small .moveby {
     left:8px;
 }
-#com-chilipeppr-widget-xyz .touchpad-overlay {
+#com-chilipeppr-widget-robot-axes .touchpad-overlay {
     padding:0;
     margin:0;
     /* position:absolute; */
@@ -167,38 +167,38 @@
     align-items: center;
     justify-content: center;
 }
-#com-chilipeppr-widget-xyz .btnShowTouchJog {
+#com-chilipeppr-widget-robot-axes .btnShowTouchJog {
     font-size:10px;
     height:67px;
 }
-#com-chilipeppr-widget-xyz.size-small .btnShowTouchJog {
+#com-chilipeppr-widget-robot-axes.size-small .btnShowTouchJog {
     font-size:10px;
     height:50px;
 }
-#com-chilipeppr-widget-xyz-machinecoords {
+#com-chilipeppr-widget-robot-axes-machinecoords {
     padding:2px;
 }
-#com-chilipeppr-widget-xyz-machinecoords .col {
+#com-chilipeppr-widget-robot-axes-machinecoords .col {
     padding:0;
 }
-#com-chilipeppr-widget-xyz-machinecoords .com-chilipeppr-xyz-label-well {
+#com-chilipeppr-widget-robot-axes-machinecoords .widget-robot-axes-label-well {
     background-color: white;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     margin-bottom: 0px;
     margin-right: 2px;
 }
-#com-chilipeppr-widget-xyz-machinecoords .com-chilipeppr-xyz-well {
+#com-chilipeppr-widget-robot-axes-machinecoords .widget-robot-axes-well {
     overflow: hidden;
     /* position: relative; */
     margin-bottom: 0px;
     padding: 3px 16px;
 }
-#com-chilipeppr-widget-xyz-machinecoords .com-chilipeppr-xyz-pos-well {
+#com-chilipeppr-widget-robot-axes-machinecoords .widget-robot-axes-pos-well {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-#com-chilipeppr-widget-xyz-machinecoords .com-chilipeppr-xyz-menu {
+#com-chilipeppr-widget-robot-axes-machinecoords .widget-robot-axes-menu {
     /* z-index: 2; */
     position: absolute;
     left: 3px;
@@ -207,12 +207,12 @@
 .jogincrements-horiz button {
     height: 26px;
 }
-#com-chilipeppr-widget-xyz .xyz-pencil {
+#com-chilipeppr-widget-robot-axes .xyz-pencil {
     position:absolute;
     top:1px;
     left:1px;
 }
-#com-chilipeppr-widget-xyz .xyz-number {
+#com-chilipeppr-widget-robot-axes .xyz-number {
     position:absolute;
     top:-4px;
     left:28px;
