@@ -10,9 +10,8 @@ cprequire_test(["inline:com-chilipeppr-widget-robot-axes"], function (xyz) {
 
     // load the WCS widget to left
     //$('body').css('margin-left', '80px');
-    var wrapDiv = $('<div class="testdiv" style="margin-left:80px;position:relative;">');
-
-    $('#com-chilipeppr-widget-robot-axes').wrap(wrapDiv);
+    // var wrapDiv = $('<div class="testdiv" style="margin-left:80px;position:relative;">');
+    // $('#com-chilipeppr-widget-robot-axes').wrap(wrapDiv);
 
     // test out planner resume/pause
     var testPauseResume = function () {
@@ -246,7 +245,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             this.setupUiFromCookie();
             this.setupTouchArea();
             this.setupShowHideTouchBtn();
-            this.setupShowHideWcsBtn();
+            // this.setupShowHideWcsBtn();
             var that = this;
             console.log(this.name + " done loading.");
         },
@@ -1991,7 +1990,11 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             // load the pubsub viewer / fork element which decorates our upper right pulldown
             // menu with the ability to see the pubsubs from this widget and the forking links
             var that = this;
-            chilipeppr.load("http://fiddle.jshell.net/chilipeppr/zMbL9/show/light/", function () {
+
+            chilipeppr.load(
+                "http://raw.githubusercontent.com/chilipeppr/widget-pubsubviewer/master/auto-generated-widget.html", 
+                // "http://fiddle.jshell.net/chilipeppr/zMbL9/show/light/", 
+                function () {
                 require(['inline:com-chilipeppr-elem-pubsubviewer'], function (pubsubviewer) {
                     pubsubviewer.attachTo($('#com-chilipeppr-widget-robot-axes .panel-heading .dropdown-menu'), that);
                 });
