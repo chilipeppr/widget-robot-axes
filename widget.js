@@ -246,8 +246,31 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             this.setupTouchArea();
             this.setupShowHideTouchBtn();
             // this.setupShowHideWcsBtn();
-            var that = this;
+            // var that = this;
+
+            this.createDomAxes();
+
             console.log(this.name + " done loading.");
+        },
+        // This takes the template in the HTML and reproduces per axis to make this easier
+        // since we have 6 and more for grippers
+        createDomAxes: function() {
+            var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
+            var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var that = this;
+            arr.forEach(element => {
+                var clone = elTmplt.clone();
+                clone.id = "com-chilipeppr-widget-robot-axes-" + element;
+                clone.find('.widget-robot-axes-img').css('background-image', "url('" + element + ".jpg')");
+                clone.find('.axis-name').text(that.titleCase(element));
+                elTmplt.parent().append(clone);
+            });
+            elTmplt.addClass("hidden");
+        },
+        titleCase: function(str) {
+            var s = str.charAt(0).toUpperCase();
+            s += str.slice(1);
+            return s;
         },
         pencilSetup: function() {
             // add mouseover events to DRO numbers
@@ -263,7 +286,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             var tgtEl = $(evt.currentTarget);
             var btn = $('<button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button>');
             btn.click(this.pencilClick.bind(this));
-            tgtEl.find('.com-chilipeppr-xyz-pos-well').prepend(btn);
+            tgtEl.find('.widget-robot-axes-pos-well').prepend(btn);
             
             // attach descriptive popoover
             btn.popover({
@@ -287,7 +310,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             
             var txt = $('<input type="number" class="form-control xyz-number" placeholder="Enter New Coord">');
             txt.keyup(this.pencilKeypress.bind(this));
-            var posEl = tgtEl.parents('.com-chilipeppr-xyz-pos-well');
+            var posEl = tgtEl.parents('.widget-robot-axes-pos-well');
             console.log("lastCoords:", this.lastCoords, "lastVal:", this.lastVal);
             var val = this.lastVal[posEl.data('axis')];
             txt.val(val);
@@ -301,7 +324,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         pencilKeypress: function(evt) {
             console.log("got pencilKeypress. evt:", evt);
             var tgtEl = $(evt.currentTarget);
-            var posEl = tgtEl.parents('.com-chilipeppr-xyz-pos-well');
+            var posEl = tgtEl.parents('.widget-robot-axes-pos-well');
             var axis = posEl.data('axis').toUpperCase();
             console.log("axis:", axis);
             
@@ -317,10 +340,10 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     Id:"axes" + this.pencilCtr++
                 });
                 
-                this.pencilHide(tgtEl.parents('.com-chilipeppr-xyz-pos-well'));
+                this.pencilHide(tgtEl.parents('.widget-robot-axes-pos-well'));
             } else if (evt.keyCode == 27) {
                 console.log("ESC key hit");
-                this.pencilHide(tgtEl.parents('.com-chilipeppr-xyz-pos-well'));
+                this.pencilHide(tgtEl.parents('.widget-robot-axes-pos-well'));
             }
             
             
@@ -338,11 +361,11 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             $('#com-chilipeppr-widget-robot-axes-a').removeClass("hidden");
             $('#com-chilipeppr-widget-robot-axes-b').removeClass("hidden");
             // change labels
-            $('#com-chilipeppr-widget-robot-axes-a .com-chilipeppr-xyz-label').text("E0");
-            $('#com-chilipeppr-widget-robot-axes-b .com-chilipeppr-xyz-label').text("E1");
+            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-label').text("E0");
+            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-label').text("E1");
             // change units
-            $('#com-chilipeppr-widget-robot-axes-a .com-chilipeppr-xyz-dim').text("mm");
-            $('#com-chilipeppr-widget-robot-axes-b .com-chilipeppr-xyz-dim').text("mm");
+            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-dim').text("mm");
+            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-dim').text("mm");
 
         },
         setupShowHideWcsBtn: function () {
@@ -1088,7 +1111,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         currentUnits: null,
         updateUnitsFromStatus: function (units) {
             console.log("updateUnitsFromStatus. units:", units);
-            $('.com-chilipeppr-xyz-dim').text(units);
+            $('.widget-robot-axes-dim').text(units);
             this.currentUnits = units;
         },
         lastCoords: {

@@ -31,11 +31,28 @@
     margin:0;
 }
 .widget-robot-axes-label {
-    padding:0;
+    /* padding:0; */
     margin:0;
+    text-align: left;
+    padding: 0px 0px 0px 8px;
+    
+}
+.widget-robot-axes-label .axis-name {
+    text-shadow: 0 0 8px white ;
+}
+.widget-robot-axes-img {
+    background-size: cover;
+    background-position-y: center;
+    height:50px;
+    /* width:50px;
+    position: absolute;
+    top:0;
+    left:0; */
+    /* z-index: -1; */
 }
 .widget-robot-axes-label-well h2 {
-    text-align: center;
+    /* text-align: center; */
+    font-size: 24px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
@@ -53,6 +70,8 @@
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    padding-top:8px;
+    height:50px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-menu {
     /* z-index: 2; */

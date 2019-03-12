@@ -47,11 +47,28 @@
     margin:0;
 }
 .widget-robot-axes-label {
-    padding:0;
+    /* padding:0; */
     margin:0;
+    text-align: left;
+    padding: 0px 0px 0px 8px;
+    
+}
+.widget-robot-axes-label .axis-name {
+    text-shadow: 0 0 8px white ;
+}
+.widget-robot-axes-img {
+    background-size: cover;
+    background-position-y: center;
+    height:50px;
+    /* width:50px;
+    position: absolute;
+    top:0;
+    left:0; */
+    /* z-index: -1; */
 }
 .widget-robot-axes-label-well h2 {
-    text-align: center;
+    /* text-align: center; */
+    font-size: 24px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
@@ -69,6 +86,8 @@
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    padding-top:8px;
+    height:50px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-menu {
     /* z-index: 2; */
@@ -487,8 +506,31 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             this.setupTouchArea();
             this.setupShowHideTouchBtn();
             // this.setupShowHideWcsBtn();
-            var that = this;
+            // var that = this;
+
+            this.createDomAxes();
+
             console.log(this.name + " done loading.");
+        },
+        // This takes the template in the HTML and reproduces per axis to make this easier
+        // since we have 6 and more for grippers
+        createDomAxes: function() {
+            var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
+            var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var that = this;
+            arr.forEach(element => {
+                var clone = elTmplt.clone();
+                clone.id = "com-chilipeppr-widget-robot-axes-" + element;
+                clone.find('.widget-robot-axes-img').css('background-image', "url('" + element + ".jpg')");
+                clone.find('.axis-name').text(that.titleCase(element));
+                elTmplt.parent().append(clone);
+            });
+            elTmplt.addClass("hidden");
+        },
+        titleCase: function(str) {
+            var s = str.charAt(0).toUpperCase();
+            s += str.slice(1);
+            return s;
         },
         pencilSetup: function() {
             // add mouseover events to DRO numbers
@@ -504,7 +546,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             var tgtEl = $(evt.currentTarget);
             var btn = $('<button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button>');
             btn.click(this.pencilClick.bind(this));
-            tgtEl.find('.com-chilipeppr-xyz-pos-well').prepend(btn);
+            tgtEl.find('.widget-robot-axes-pos-well').prepend(btn);
             
             // attach descriptive popoover
             btn.popover({
@@ -528,7 +570,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             
             var txt = $('<input type="number" class="form-control xyz-number" placeholder="Enter New Coord">');
             txt.keyup(this.pencilKeypress.bind(this));
-            var posEl = tgtEl.parents('.com-chilipeppr-xyz-pos-well');
+            var posEl = tgtEl.parents('.widget-robot-axes-pos-well');
             console.log("lastCoords:", this.lastCoords, "lastVal:", this.lastVal);
             var val = this.lastVal[posEl.data('axis')];
             txt.val(val);
@@ -542,7 +584,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         pencilKeypress: function(evt) {
             console.log("got pencilKeypress. evt:", evt);
             var tgtEl = $(evt.currentTarget);
-            var posEl = tgtEl.parents('.com-chilipeppr-xyz-pos-well');
+            var posEl = tgtEl.parents('.widget-robot-axes-pos-well');
             var axis = posEl.data('axis').toUpperCase();
             console.log("axis:", axis);
             
@@ -558,10 +600,10 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     Id:"axes" + this.pencilCtr++
                 });
                 
-                this.pencilHide(tgtEl.parents('.com-chilipeppr-xyz-pos-well'));
+                this.pencilHide(tgtEl.parents('.widget-robot-axes-pos-well'));
             } else if (evt.keyCode == 27) {
                 console.log("ESC key hit");
-                this.pencilHide(tgtEl.parents('.com-chilipeppr-xyz-pos-well'));
+                this.pencilHide(tgtEl.parents('.widget-robot-axes-pos-well'));
             }
             
             
@@ -579,11 +621,11 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             $('#com-chilipeppr-widget-robot-axes-a').removeClass("hidden");
             $('#com-chilipeppr-widget-robot-axes-b').removeClass("hidden");
             // change labels
-            $('#com-chilipeppr-widget-robot-axes-a .com-chilipeppr-xyz-label').text("E0");
-            $('#com-chilipeppr-widget-robot-axes-b .com-chilipeppr-xyz-label').text("E1");
+            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-label').text("E0");
+            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-label').text("E1");
             // change units
-            $('#com-chilipeppr-widget-robot-axes-a .com-chilipeppr-xyz-dim').text("mm");
-            $('#com-chilipeppr-widget-robot-axes-b .com-chilipeppr-xyz-dim').text("mm");
+            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-dim').text("mm");
+            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-dim').text("mm");
 
         },
         setupShowHideWcsBtn: function () {
@@ -1329,7 +1371,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         currentUnits: null,
         updateUnitsFromStatus: function (units) {
             console.log("updateUnitsFromStatus. units:", units);
-            $('.com-chilipeppr-xyz-dim').text(units);
+            $('.widget-robot-axes-dim').text(units);
             this.currentUnits = units;
         },
         lastCoords: {
@@ -2257,9 +2299,9 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
 
     <!--Put HTML Contents of Widget Here-->
     <div id="com-chilipeppr-widget-robot-axes" class="panel panel-default">
-        <div id="com-chilipeppr-widgetholder-wcs" style="position: absolute;left:-80px;top:10px;"></div>
+        <!-- <div id="com-chilipeppr-widgetholder-wcs" style="position: absolute;left:-80px;top:10px;"></div> -->
         <div class="panel-heading">
-            <div class="btn-group pull-left" style="margin-left:-6px;padding-right:6px;">
+            <!-- <div class="btn-group pull-left" style="margin-left:-6px;padding-right:6px;">
                 <button type="button" class="btn btn-xs btn-default btnToggleShowWcs" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Show Work Coordinate System" data-content="Open up the WCS widget to be able to switch work coordinate systems easily or see which layer you're on.">
                     <svg width="18px" height="18px" viewbox="0 0 16 16" style="margin-bottom:-5px;" id="svg7248">
                         <g id="layer1">
@@ -2279,22 +2321,28 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                         </g>
                     </svg>
                 </button>
-            </div>
+            </div> -->
             <div class="btn-toolbar pull-right" role="toolbar" data-style="position:absolute;right:0px;top:0px;padding:10px 15px;">
-                <div class="btn-group plannerpause hidden" data-toggle="popover" data-content="This indicator turns orange when we're being asked to pause our sending of commands to the CNC controller so we don't overfill the buffer."> <span disabled="true" class="plannerpauseindicator glyphicon glyphicon glyphicon-time btn btn-sm"></span>
+                <div class="btn-group plannerpause hidden" data-toggle="popover" 
+                data-content="This indicator turns orange when we're being asked to pause our sending of commands to the CNC controller so we don't overfill the buffer."> <span disabled="true" class="plannerpauseindicator glyphicon glyphicon glyphicon-time btn btn-sm"></span>
 
                 </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default showhidemDRO" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Toggle Machine DRO" data-content="Toggle visibility of axes readouts that show machine coordinates."><span class="glyphicon glyphicon-screenshot"></span>
-
-                    </button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default btnInMm" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Toggle between in and mm" data-content="Send G20 or G21 to the controller to switch between in and mm."><span style="font-size:8px;">in / mm</span>
+                <!-- <div class="btn-group">
+                    <button type="button" class="btn btn-xs btn-default showhidemDRO" data-delay="500" 
+                    data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
+                    data-title="Toggle Machine DRO" data-content="Toggle visibility of axes readouts that show machine coordinates."><span class="glyphicon glyphicon-screenshot"></span>
 
                     </button>
                 </div>
                 <div class="btn-group">
+                    <button type="button" class="btn btn-xs btn-default btnInMm" 
+                    data-delay="500" data-animation="true" data-placement="auto" 
+                    data-container="body" data-trigger="hover" 
+                    data-title="Toggle between in and mm" data-content="Send G20 or G21 to the controller to switch between in and mm."><span style="font-size:8px;">in / mm</span>
+
+                    </button>
+                </div> -->
+                <!-- <div class="btn-group">
                     <button type="button" class="btn btn-xs btn-default hidden btnToggleShowTouchJog" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Show Touch/Scroll/Mouse Jog" data-content="View the touch/scroll/mouse jog area.">
                         <svg width="18px" height="18px" viewBox="0 0 16 15" style="margin-bottom:-5px;">
                             <g id="layer1" inkscape:label="Layer 1" inkscape:groupmode="layer">
@@ -2306,11 +2354,11 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                             </g>
                         </svg>
                     </button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default showhideaaxis" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Show A Axis" data-content="View the A Axis in this widget.">
+                </div> -->
+                <!-- <div class="btn-group">
+                    <button type="button" class="btn btn-xs btn-default showhideaaxis" data-delay="500" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Show A Axis" data-content="View the A Axis in this widget."> -->
                         <!-- <span class="glyphicon" style=""> -->
-                        <svg width="18px" height="18px" viewBox="0 0 15 15" style="margin-bottom:-5px;">
+                        <!-- <svg width="18px" height="18px" viewBox="0 0 15 15" style="margin-bottom:-5px;">
                             <g transform="translate(0,-1)" id="layer1">
                                 <rect width="9.4103031" height="8.1495714" x="5.4276471" y="10.471354" transform="matrix(0.86602641,-0.49999826,0,1,0,0)" id="rect3833" style="fill:#f2f2f2;fill-opacity:1" />
                                 <path d="m 1.2047429,5.7539288 3.4930048,2.0050654 0,8.1495718 -3.4930048,-2.005124 z" id="rect3843" style="fill:#cccccc;fill-opacity:1" />
@@ -2321,46 +2369,113 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                                 </g>
                                 <g transform="matrix(1.1671134,0,0,1.1671134,-4.6139988,-2.1092078)" id="text3854" style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
                                 /></g>
-                        </svg>
+                        </svg> -->
                         <!-- </span> -->
+                    <!-- </button>
+                </div> -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-xs btn-default view-small"><span 
+                        class="glyphicon" style="font-size:8px;">S</span>
+
+                    </button>
+                    <button type="button" class="btn btn-xs btn-default view-large active"><span 
+                        class="glyphicon">L</span>
+
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default view-small"><span class="glyphicon" style="font-size:8px;">S</span>
-
-                    </button>
-                    <button type="button" class="btn btn-xs btn-default view-large active"><span class="glyphicon">L</span>
-
-                    </button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default hidebody"><span class="glyphicon glyphicon-chevron-up"></span>
+                    <button type="button" class="btn btn-xs btn-default hidebody"><span 
+                        class="glyphicon glyphicon-chevron-up"></span>
 
                     </button>
                 </div>
                 <div class="btn-group">
                     <div class="dropdown">
-                        <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+                        <button type="button" class="btn btn-xs btn-default dropdown-toggle" 
+                        data-toggle="dropdown"><span class="caret"></span>
 
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        <!-- <ul class="dropdown-menu dropdown-menu-right" role="menu">
                             <li><a href="#" class="xyz-showa">Show/Hide A Axis</a>
 
-                            </li>
+                            </li> -->
                             <!-- <li class="divider"></li>
                     <li role="presentation" class="dropdown-header fork-name"></li>
                     <li><a href="" target="_blank" id="com-chilipeppr-widget-robot-axes-tbar-standalone">View Widget Standalone</a></li>
                     <li><a href="" target="_blank" id="com-chilipeppr-widget-robot-axes-tbar-fork">Fork Widget</a></li> -->
-                        </ul>
+                        <!-- </ul> -->
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">Axes <span style="font-size:9px">v2</span></span>
+            </div> <span class="panel-title" data-toggle="popover">Axes 
+                <span style="font-size:9px">v1</span></span>
 
         </div>
         <div id="com-chilipeppr-widget-robot-axes-body" class="panel-body">
             <div class="container-fluid">
+                <!-- Axis Template Row -->
+                <div id="com-chilipeppr-widget-robot-axes-tmplt" class="row">
+                    <!-- Label -->
+                    <div class="col col-xs-5" style="position:relative;">
+                        <div class="btn-group widget-robot-axes-menu">
+                            <button type="button" class="btn btn-xs btn-default dropdown-toggle" 
+                            data-toggle="dropdown"> <span class="caret"></span>
+
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <!-- <li role="presentation" class="dropdown-header">3rd layer coordinates: G92
+                                    <br/>Temporary offset not saved to EEPROM. G92 is forgotten when a cycle end (M2 or M30) occurs.</li>
+                                <li><a href="">Zero Out Temporary X Axis (G92 X0)</a>
+
+                                </li>
+                                <li><a href="">Un-Zero Out Temporary X Axis (G92.1 X0)</a>
+
+                                </li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation" class="dropdown-header">2nd layer coordinates: (<span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span>) is currently active.</li>
+                                <li><a href="">Go To Work Zero On X Axis (G0 X0)</a>
+
+                                </li>
+                                <li><a href="">Zero Out Work X Axis (G10 L2 Pn Xn)</a>
+
+                                </li>
+                                <li role="presentation" class="divider"></li> -->
+                                <li role="presentation" class="dropdown-header">1st layer coordinates: G53
+                                    <br/>Absolute physical machine coordinates</li>
+                                <li><a href="">Go To Machine Zero On <span class="axis-name">(Axis Name)</span> Axis (G53 G0 X0)</a>
+
+                                </li>
+                                <li><a href="">Zero Out machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
+
+                                </li>
+                                <li><a href="">Home Machine <span class="axis-name">(Axis Name)</span> Axis (G28.2 X0) <span class="xyz-limitswitch">Limit Switch required</span></a>
+
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="well widget-robot-axes-well widget-robot-axes-label-well flatbottom  widget-robot-axes-img"
+                            style="background-image:url('base.jpg');">
+                            
+                            <h2 class="widget-robot-axes-label"><span class="axis-name">Base</span></h2>
+                            <!-- <div class="widget-robot-axes-img" style="background-image:url('base.jpg') ;">
+                                </div> -->
+                        </div>
+                    </div>
+                    <!-- Value -->
+                    <!-- <div class="col col-xs-2 widget-robot-axes-img" style="background-image:url('base.jpg') ;">
+                    </div> -->
+                    <!-- Value -->
+                    <div class="col col-xs-7">
+                        <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
+                            <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
+                            <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
+                            <h2 class="widget-robot-axes-pos"><table><tr><td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">00</span><span class="xyz-intblack">0</span></td><td>.<span class="xyz-decimal">000</span></td></tr></table></h2>
+
+                            <div class="widget-robot-axes-dim">steps</div>
+                        </div>
+                    </div>
+                </div>
                 <!-- X -->
-                <div id="com-chilipeppr-widget-robot-axes-x" class="row">
+                <div id="com-chilipeppr-widget-robot-axes-x" class="row hidden">
                     <!-- Label -->
                     <div class="col col-xs-3" style="position:relative;">
                         <div class="btn-group widget-robot-axes-menu">
@@ -2415,7 +2530,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     </div>
                 </div>
                 <!-- Y -->
-                <div id="com-chilipeppr-widget-robot-axes-y" class="row">
+                <div id="com-chilipeppr-widget-robot-axes-y" class="row hidden">
                     <!-- Label -->
                     <div class="col col-xs-3" style="position:relative;">
                         <div class="btn-group widget-robot-axes-menu">
@@ -2468,7 +2583,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     </div>
                 </div>
                 <!-- Z -->
-                <div id="com-chilipeppr-widget-robot-axes-z" class="row">
+                <div id="com-chilipeppr-widget-robot-axes-z" class="row hidden">
                     <!-- Label -->
                     <div class="col col-xs-3" style="position:relative;">
                         <div class="btn-group widget-robot-axes-menu">
