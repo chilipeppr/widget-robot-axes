@@ -257,16 +257,21 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         createDomAxes: function() {
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
             var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var arrName = ['Base', 'Upper Arm', 'Forearm', 'Wrist 1', 'Wrist 2', 'Wrist 3'];
             var that = this;
             var prefix = "";
             prefix = "https://raw.githubusercontent.com/chilipeppr/widget-robot-axes/master/";
-            arr.forEach(element => {
+
+            for (let index = 0; index < arr.length; index++) {
+                const element = arr[index];
+                
                 var clone = elTmplt.clone();
                 clone.id = "com-chilipeppr-widget-robot-axes-" + element;
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
-                clone.find('.axis-name').text(that.titleCase(element));
+                clone.find('.axis-name').text(arrName[index]);
                 elTmplt.parent().append(clone);
-            });
+            }
+            
             elTmplt.addClass("hidden");
         },
         titleCase: function(str) {
