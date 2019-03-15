@@ -50,16 +50,16 @@
     /* padding:0; */
     margin:0;
     text-align: left;
-    padding: 0px 0px 0px 8px;
+    padding: 0px 0px 0px 0px;
     
 }
 .widget-robot-axes-label .axis-name {
-    text-shadow: 0 0 8px white ;
+    /* text-shadow: 0 0 2px white ; */
 }
 .widget-robot-axes-img {
     background-size: cover;
     background-position-y: center;
-    height:50px;
+    height:60px;
     /* width:50px;
     position: absolute;
     top:0;
@@ -69,6 +69,7 @@
 .widget-robot-axes-label-well h2 {
     /* text-align: center; */
     font-size: 24px;
+    color:white;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
@@ -81,13 +82,13 @@
     overflow: hidden;
     /* position: relative; */
     margin-bottom: 0px;
-    padding: 3px 16px;
+    padding: 25px 0px 0px 2px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     padding-top:8px;
-    height:50px;
+    height:60px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-menu {
     /* z-index: 2; */
@@ -517,16 +518,21 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         createDomAxes: function() {
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
             var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var arrName = ['Base', 'Upper Arm', 'Forearm', 'Wrist 1', 'Wrist 2', 'Wrist 3'];
             var that = this;
             var prefix = "";
             prefix = "https://raw.githubusercontent.com/chilipeppr/widget-robot-axes/master/";
-            arr.forEach(element => {
+
+            for (let index = 0; index < arr.length; index++) {
+                const element = arr[index];
+                
                 var clone = elTmplt.clone();
                 clone.id = "com-chilipeppr-widget-robot-axes-" + element;
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
-                clone.find('.axis-name').text(that.titleCase(element));
+                clone.find('.axis-name').text(arrName[index]);
                 elTmplt.parent().append(clone);
-            });
+            }
+            
             elTmplt.addClass("hidden");
         },
         titleCase: function(str) {
@@ -2417,7 +2423,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 <!-- Axis Template Row -->
                 <div id="com-chilipeppr-widget-robot-axes-tmplt" class="row">
                     <!-- Label -->
-                    <div class="col col-xs-5" style="position:relative;">
+                    <div class="col col-xs-4" style="position:relative;">
                         <div class="btn-group widget-robot-axes-menu">
                             <button type="button" class="btn btn-xs btn-default dropdown-toggle" 
                             data-toggle="dropdown"> <span class="caret"></span>
@@ -2466,7 +2472,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     <!-- <div class="col col-xs-2 widget-robot-axes-img" style="background-image:url('base.jpg') ;">
                     </div> -->
                     <!-- Value -->
-                    <div class="col col-xs-7">
+                    <div class="col col-xs-8">
                         <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
                             <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
                             <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
