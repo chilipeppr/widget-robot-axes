@@ -73,10 +73,9 @@
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: 4px 0 0 4px;
     margin-bottom: 0px;
-    margin-right: 2px;
+    margin-right: 0px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-well {
     overflow: hidden;
@@ -85,8 +84,7 @@
     padding: 25px 0px 0px 2px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0;
     padding-top:8px;
     height:60px;
 }
@@ -254,6 +252,17 @@
     left:28px;
     width:70%;
     z-index:10;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button {
+    width:100%;
+    height:31px;
+    padding:0;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-fwd {
+    border-top-left-radius: 0px;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-rev {
+    border-bottom-left-radius: 0px;
 }
     </style>
 
@@ -517,7 +526,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         // since we have 6 and more for grippers
         createDomAxes: function() {
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
-            var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var arr = ['Base', 'Upperarm', 'Forearm', 'Wrist1', 'Wrist2', 'Wrist3'];
             var arrName = ['Base', 'Upper Arm', 'Forearm', 'Wrist 1', 'Wrist 2', 'Wrist 3'];
             var that = this;
             var prefix = "";
@@ -527,13 +536,57 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 const element = arr[index];
                 
                 var clone = elTmplt.clone();
-                clone.id = "com-chilipeppr-widget-robot-axes-" + element;
+                clone.attr("id", "com-chilipeppr-widget-robot-axes-" + element);
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
                 clone.find('.axis-name').text(arrName[index]);
                 elTmplt.parent().append(clone);
+
+                // attach events
+                var btnJogFwd = clone.find(".jog-fwd");
+                btnJogFwd.on("click", this.onJogFwdClick.bind(this));
+                btnJogFwd.data("id", element);
+                var btnJogRev = clone.find(".jog-rev");
+                btnJogRev.on("click", this.onJogRevClick.bind(this));
+                btnJogRev.data("id", element);
             }
             
             elTmplt.addClass("hidden");
+        },
+        onJogFwdClick: function(evt) {
+            console.log("Got onJogFwdClick. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+
+            // see if pressed already or not
+            if (el.hasClass("active")) {
+                // button is already pressed, unpress it
+                el.removeClass("active");
+                // stop the jog
+
+            } else {
+                // button is not pressed
+                el.addClass("active");
+                // start the jog
+            }
+        },
+        onJogRevClick: function(evt) {
+            console.log("Got onJogRevClick. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+
+            // see if pressed already or not
+            if (el.hasClass("active")) {
+                // button is already pressed, unpress it
+                el.removeClass("active");
+                // stop the jog
+
+            } else {
+                // button is not pressed
+                el.addClass("active");
+                // start the jog
+            }
         },
         titleCase: function(str) {
             var s = str.charAt(0).toUpperCase();
@@ -2452,7 +2505,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                                 <li><a href="">Go To Machine Zero On <span class="axis-name">(Axis Name)</span> Axis (G53 G0 X0)</a>
 
                                 </li>
-                                <li><a href="">Zero Out machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
+                                <li><a href="">Zero Out Machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
 
                                 </li>
                                 <li><a href="">Home Machine <span class="axis-name">(Axis Name)</span> Axis (G28.2 X0) <span class="xyz-limitswitch">Limit Switch required</span></a>
@@ -2472,14 +2525,23 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     <!-- <div class="col col-xs-2 widget-robot-axes-img" style="background-image:url('base.jpg') ;">
                     </div> -->
                     <!-- Value -->
-                    <div class="col col-xs-8">
+                    <div class="col col-xs-6">
                         <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
                             <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
                             <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
-                            <h2 class="widget-robot-axes-pos"><table><tr><td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">00</span><span class="xyz-intblack">0</span></td><td>.<span class="xyz-decimal">000</span></td></tr></table></h2>
+                            <h2 class="widget-robot-axes-pos"><table><tr>
+                                <td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">00</span><span class="xyz-intblack">0</span></td>
+                                <!-- <td>.<span class="xyz-decimal">000</span></td> -->
+                            </tr></table></h2>
 
                             <div class="widget-robot-axes-dim">steps</div>
                         </div>
+                    </div>
+                    <div class="col col-xs-2 btn-group-vertical per-axis-jog" style="">
+                        <button class="btn btn-default jog-fwd"><span class="glyphicon glyphicon-circle-arrow-up"></span>
+                        </button>
+                        <button class="btn btn-default jog-rev "><span class="glyphicon glyphicon-circle-arrow-down"></span>
+                        </button>
                     </div>
                 </div>
                 <!-- X -->
