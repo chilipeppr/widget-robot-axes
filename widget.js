@@ -256,7 +256,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         // since we have 6 and more for grippers
         createDomAxes: function() {
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
-            var arr = ['base', 'upperarm', 'forearm', 'wrist1', 'wrist2', 'wrist3'];
+            var arr = ['Base', 'Upperarm', 'Forearm', 'Wrist1', 'Wrist2', 'Wrist3'];
             var arrName = ['Base', 'Upper Arm', 'Forearm', 'Wrist 1', 'Wrist 2', 'Wrist 3'];
             var that = this;
             var prefix = "";
@@ -266,13 +266,57 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 const element = arr[index];
                 
                 var clone = elTmplt.clone();
-                clone.id = "com-chilipeppr-widget-robot-axes-" + element;
+                clone.attr("id", "com-chilipeppr-widget-robot-axes-" + element);
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
                 clone.find('.axis-name').text(arrName[index]);
                 elTmplt.parent().append(clone);
+
+                // attach events
+                var btnJogFwd = clone.find(".jog-fwd");
+                btnJogFwd.on("click", this.onJogFwdClick.bind(this));
+                btnJogFwd.data("id", element);
+                var btnJogRev = clone.find(".jog-rev");
+                btnJogRev.on("click", this.onJogRevClick.bind(this));
+                btnJogRev.data("id", element);
             }
             
             elTmplt.addClass("hidden");
+        },
+        onJogFwdClick: function(evt) {
+            console.log("Got onJogFwdClick. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+
+            // see if pressed already or not
+            if (el.hasClass("active")) {
+                // button is already pressed, unpress it
+                el.removeClass("active");
+                // stop the jog
+
+            } else {
+                // button is not pressed
+                el.addClass("active");
+                // start the jog
+            }
+        },
+        onJogRevClick: function(evt) {
+            console.log("Got onJogRevClick. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+
+            // see if pressed already or not
+            if (el.hasClass("active")) {
+                // button is already pressed, unpress it
+                el.removeClass("active");
+                // stop the jog
+
+            } else {
+                // button is not pressed
+                el.addClass("active");
+                // start the jog
+            }
         },
         titleCase: function(str) {
             var s = str.charAt(0).toUpperCase();

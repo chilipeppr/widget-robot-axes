@@ -57,10 +57,9 @@
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-label-well {
     background-color: white;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: 4px 0 0 4px;
     margin-bottom: 0px;
-    margin-right: 2px;
+    margin-right: 0px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-well {
     overflow: hidden;
@@ -69,8 +68,7 @@
     padding: 25px 0px 0px 2px;
 }
 #com-chilipeppr-widget-robot-axes-body .widget-robot-axes-pos-well {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0;
     padding-top:8px;
     height:60px;
 }
@@ -238,4 +236,15 @@
     left:28px;
     width:70%;
     z-index:10;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button {
+    width:100%;
+    height:31px;
+    padding:0;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-fwd {
+    border-top-left-radius: 0px;
+}
+#com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-rev {
+    border-bottom-left-radius: 0px;
 }

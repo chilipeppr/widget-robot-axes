@@ -180,7 +180,7 @@
                                 <li><a href="">Go To Machine Zero On <span class="axis-name">(Axis Name)</span> Axis (G53 G0 X0)</a>
 
                                 </li>
-                                <li><a href="">Zero Out machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
+                                <li><a href="">Zero Out Machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
 
                                 </li>
                                 <li><a href="">Home Machine <span class="axis-name">(Axis Name)</span> Axis (G28.2 X0) <span class="xyz-limitswitch">Limit Switch required</span></a>
@@ -200,14 +200,23 @@
                     <!-- <div class="col col-xs-2 widget-robot-axes-img" style="background-image:url('base.jpg') ;">
                     </div> -->
                     <!-- Value -->
-                    <div class="col col-xs-8">
+                    <div class="col col-xs-6">
                         <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
                             <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
                             <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
-                            <h2 class="widget-robot-axes-pos"><table><tr><td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">00</span><span class="xyz-intblack">0</span></td><td>.<span class="xyz-decimal">000</span></td></tr></table></h2>
+                            <h2 class="widget-robot-axes-pos"><table><tr>
+                                <td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">00</span><span class="xyz-intblack">0</span></td>
+                                <!-- <td>.<span class="xyz-decimal">000</span></td> -->
+                            </tr></table></h2>
 
                             <div class="widget-robot-axes-dim">steps</div>
                         </div>
+                    </div>
+                    <div class="col col-xs-2 btn-group-vertical per-axis-jog" style="">
+                        <button class="btn btn-default jog-fwd"><span class="glyphicon glyphicon-circle-arrow-up"></span>
+                        </button>
+                        <button class="btn btn-default jog-rev "><span class="glyphicon glyphicon-circle-arrow-down"></span>
+                        </button>
                     </div>
                 </div>
                 <!-- X -->
