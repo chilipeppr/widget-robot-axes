@@ -548,10 +548,10 @@
                     <tr valign="top">
                         <td class="col xcol-xs-2" style="border:0px red solid;" rowspan="2">
                             <div class="btn-group-vertical">
-                                <button class="btn btn-xs btn-default joggotozerow" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, current work coordinate" data-content="G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in current work coordinate system; individual moves available via axis drop down menus above."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body">Go To <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button>
-                                <button class="btn btn-xs btn-default jogzerooutw " id="jogzerooutw" data-toggle="popover" data-placement="top" data-title="Set Active Coordinate Zero Here" data-content="Sets active work coordinate system zero to current machine position." data-html="true"
-                                data-delay="800" data-trigger="hover" data-container="body">Set <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button>
+                                <!-- <button class="btn btn-xs btn-default joggotozerow" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, current work coordinate" data-content="G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in current work coordinate system; individual moves available via axis drop down menus above."
+                                data-html="true" data-delay="800" data-trigger="hover" data-container="body">Go To <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button> -->
+                                <!-- <button class="btn btn-xs btn-default jogzerooutw " id="jogzerooutw" data-toggle="popover" data-placement="top" data-title="Set Active Coordinate Zero Here" data-content="Sets active work coordinate system zero to current machine position." data-html="true"
+                                data-delay="800" data-trigger="hover" data-container="body">Set <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button> -->
                                 <button class="btn btn-xs btn-default joggotozerom" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, absolute machine coordinate" data-content="G53 G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in absolute machine coordinate system; individual moves available via axis drop down menus above."
                                 data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Go To Mch Zero</button>
                                 <button class="btn btn-xs btn-default jogzerooutm " data-toggle="popover" data-placement="top" data-title="Set Machine Zero on All Axes" data-content="G28.3 X0 Y0 Z0 A0<br/>Sets hardware zero (G53) to the current position.  Useful if machine does not have limit switches."
@@ -573,18 +573,18 @@
                                     <li><a href="javascript:" class="jogvialongmove">Jog via Sending Single Long Move then Feedhold</a></li>
                                 </ul>
                             </div> -->
-                                <button id="com-chilipeppr-widget-robot-axes-jog" class="btn btn-default dbltall" style="padding: 8px 4px;" data-toggle="popover" data-placement="auto" data-title="Jog Shortcut Keys" data-content="X+ : Left Arrow<br>X- : Right Arrow<br>Y+ : Up Arrow<br>Y- : Down Arrow<br>Z+ : Page Up<br>Z- : Page Down<br>Shift : 10x Move By<br>Ctrl (or Alt) : 100x Move By<br>Shift + Ctrl (or Alt) : 1,000x Move By"
+                                <!-- <button id="com-chilipeppr-widget-robot-axes-jog" class="btn btn-default dbltall" style="padding: 8px 4px;" data-toggle="popover" data-placement="auto" data-title="Jog Shortcut Keys" data-content="X+ : Left Arrow<br>X- : Right Arrow<br>Y+ : Up Arrow<br>Y- : Down Arrow<br>Z+ : Page Up<br>Z- : Page Down<br>Shift : 10x Move By<br>Ctrl (or Alt) : 100x Move By<br>Shift + Ctrl (or Alt) : 1,000x Move By"
                                 data-html="true" data-delay="200" data-trigger="hover" data-container="body"><span class="rotate90">Jog</span>
-                                </button>
+                                </button> -->
                             </div>
                         </td>
-                        <td class="col xcol-xs-2" style="border:0px yellow solid;">
+                        <!-- <td class="col xcol-xs-2" style="border:0px yellow solid;">
                             <button class="btn btn-default jogxneg dbltall">X
                                 <br/><span class="glyphicon glyphicon-circle-arrow-left"></span>
 
                             </button>
-                        </td>
-                        <td>
+                        </td> -->
+                        <!-- <td>
                             <div class="btn-group-vertical" style="margin-right:-0px;">
                                 <button class="btn btn-default jogy">Y <span class="glyphicon glyphicon-circle-arrow-up"></span>
                                 </button>
@@ -604,7 +604,7 @@
                                 <button class="btn btn-default jogzneg ">Z <span class="glyphicon glyphicon-minus-sign"></span>
                                 </button>
                             </div>
-                        </td>
+                        </td> -->
                         <td class="hidden" style="">
                             <button type="button" class="btn btn-lg btn-default btnShowTouchJog btnToggleShowTouchJog" style="padding:0 10px;">
                                 <svg width="38px" height="38px" viewBox="0 0 16 15" style="margin-bottom:-5px;">
@@ -622,11 +622,11 @@
                     <tr>
                         <td colspan="7" style="padding-left:4px;padding-top:2px;">
                             <div class="btn-group jogincrements-horiz dropup " style="">
-                                <button class="btn btn-default btn-xs jogincr1 hilite">1</button>
-                                <button class="btn btn-default btn-xs jogincrpt1 ">0.1</button>
-                                <button class="btn btn-default btn-xs jogincrpt01 ">0.01</button>
-                                <button class="btn btn-default btn-xs jogincrpt001 ">0.001</button>
-                                <button class="btn btn-default btn-xs jogincrCustomBtn ">Custom <code class="jogincrCustomVal">10</code>
+                                <button class="btn btn-default btn-xs jogincr1 hilite">1000</button>
+                                <button class="btn btn-default btn-xs jogincrpt1 ">100</button>
+                                <button class="btn btn-default btn-xs jogincrpt01 ">10</button>
+                                <button class="btn btn-default btn-xs jogincrpt001 ">1</button>
+                                <button class="btn btn-default btn-xs jogincrCustomBtn ">Custom <code class="jogincrCustomVal">50</code>
                                 </button>
                                 <button type="button" class="btn btn-xs btn-default dropdown-toggle jogincrCustomDropUpBtn" data-toggle="dropdown" aria-expanded="false"> <span class="caret"></span>
 
