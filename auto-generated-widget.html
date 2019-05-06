@@ -403,9 +403,9 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             */
             
             if (payload && payload.Name && payload.Name.length > 0) {
-                if (payload.Tag && "Step" in payload.Tag ) {
+                if (payload.Tag && "Stat" in payload.Tag && "Step" in payload.Tag.Stat ) {
                     // update axes val
-                    this.setAxesStepVal(payload.Name, payload.Tag.Step);
+                    this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
                 }
             }
         },
