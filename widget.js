@@ -6,157 +6,7 @@ cprequire_test(["inline:com-chilipeppr-widget-robot-axes"], function (xyz) {
     //xyz.initAs3dPrinting();
     xyz.init();
     xyz.showBody("com-chilipeppr-widget-robot-axes");
-    xyz.currentUnits = 'mm'
-
-    // load the WCS widget to left
-    //$('body').css('margin-left', '80px');
-    // var wrapDiv = $('<div class="testdiv" style="margin-left:80px;position:relative;">');
-    // $('#com-chilipeppr-widget-robot-axes').wrap(wrapDiv);
-
-    // test out planner resume/pause
-    var testPauseResume = function () {
-        setTimeout(function () {
-            chilipeppr.publish('/com-chilipeppr-interface-cnccontroller/plannerpause', "");
-        }, 5000);
-        setTimeout(function () {
-            chilipeppr.publish('/com-chilipeppr-interface-cnccontroller/plannerresume', "");
-        }, 10000);
-        setTimeout(function () {
-            chilipeppr.publish('/com-chilipeppr-interface-cnccontroller/plannerpause', "");
-        }, 15000);
-        setTimeout(function () {
-            chilipeppr.publish('/com-chilipeppr-interface-cnccontroller/plannerresume', "");
-        }, 20000);
-    };
-
-    var testAxesValUpdates = function () {
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: 0.005,
-                y: 10.46,
-                z: 0.304,
-                a: 0,
-                type: "work",
-                mpo: {
-                    x: 0.005,
-                    y: 10.46,
-                    z: 0.304,
-                    a: 0,
-                    type: "machine"
-                }
-            });
-        }, 1000);
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: 192,
-                y: 0.028,
-                z: 0.01,
-                a: 0,
-                type: "work"
-            });
-        }, 2000);
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: -3288.73,
-                y: -0,
-                z: 1.12,
-                a: null,
-                type: "work"
-            });
-        }, 3000);
-
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: 940.5744,
-                y: null,
-                z: 1.12,
-                a: null,
-                type: "work"
-            });
-        }, 4000);
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: 0.574,
-                y: 32.424,
-                z: -3.424,
-                a: null,
-                type: "work"
-            });
-        }, 5000);
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/axes", {
-                x: null,
-                y: 132.424,
-                z: -3.424,
-                a: null,
-                type: "work"
-            });
-        }, 5000);
-    };
-
-    // test units change
-    var testUnitsChange = function () {
-
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/units", "inch");
-        }, 1000);
-        setTimeout(function () {
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/units", "mm");
-        }, 5000);
-    };
-
-    // test units change
-    var testCoordsChange = function () {
-
-        setTimeout(function () {
-            var c = {
-                coord: "G54",
-                coordNum: 54
-            };
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/coords", c);
-        }, 1000);
-        setTimeout(function () {
-            var c = {
-                coord: "G55",
-                coordNum: 55
-            };
-            chilipeppr.publish("/com-chilipeppr-interface-cnccontroller/coords", c);
-        }, 5000);
-    };
-
-    //testPauseResume();
-    testAxesValUpdates();
-    //testUnitsChange();
-    testCoordsChange();
-
-    /*
-    setTimeout(function() {
-        
-        console.log("setting up alternate keystrokes");
-        $('#com-chilipeppr-widget-robot-axes-ftr').keydown(function(evt) {
-            var e = $.Event('keydown');
-            
-            if (evt.which == 50) {
-                // the #2 key
-                // mimic down arrow being pressed
-                e.which= 40;
-            } else if (evt.which == 56) {
-                // the #8 key
-                // mimic up arrow being pressed
-                e.which= 38; // enter
-            }
-            
-            console.log("artificial event:", e);
-            if (e.which > 0) {
-                evt.preventDefault();
-                // fire off fake event as if key was pressed down
-                $('#com-chilipeppr-widget-robot-axes-ftr').trigger(e);
-                return false;
-            }
-        });
-        
-    }, 5000);
-    */
+    
     $('body').css("padding", "20px");
 
 } /*end_test*/ );
@@ -173,29 +23,35 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         publish: {},
         subscribe: {},
         foreignPublish: {
-            '/com-chilipeppr-widget-serialport/send': "We publish to the serial port Gcode jog commands"
+            // '/com-chilipeppr-widget-serialport/send': "We publish to the serial port Gcode jog commands"
+            '/com-chilipeppr-widget-cayenn/sendToDeviceNameViaTcp': "We publish to the Cayenn widget so it can send jog values to the Cayenn device by name like Wrist1, Wrist2, Wrist3, etc.",
         },
         foreignSubscribe: {
-            "/com-chilipeppr-interface-cnccontroller/axes": "We want X,Y,Z,A,MX,MY,MZ,MA axis updates.",
-                "/com-chilipeppr-interface-cnccontroller/coords": "Track which is active: G54, G55, etc.",
-                "/com-chilipeppr-interface-cnccontroller/plannerpause": "We need to know when to pause sending jog cmds.",
-                "/com-chilipeppr-interface-cnccontroller/plannerresume": "We need to know when to resume jog cmds.",
-                "/com-chilipeppr-interface-cnccontroller/units": "Deprecated. Not listening to this anymore. See next.",
-                '/com-chilipeppr-widget-3dviewer/unitsChanged': "Listenting to see if the 3D Viewer is telling us that the user Gcode is in a specific coordinate and then just assuming we will only be sent axes coordinate updates in that unit. Not using /com-chilipeppr-interface-cnccontroller/units anymore."
+            '/com-chilipeppr-widget-cayenn/onRecvFromDeviceName': "We subscribe to the Cayenn widget so when it tells us the step value of axes like Wrist1, Wrist2, Wrist3, etc we can update our widget.",
+            // "/com-chilipeppr-interface-cnccontroller/axes": "We want X,Y,Z,A,MX,MY,MZ,MA axis updates.",
+            // "/com-chilipeppr-interface-cnccontroller/coords": "Track which is active: G54, G55, etc.",
+            // "/com-chilipeppr-interface-cnccontroller/plannerpause": "We need to know when to pause sending jog cmds.",
+            // "/com-chilipeppr-interface-cnccontroller/plannerresume": "We need to know when to resume jog cmds.",
+            // "/com-chilipeppr-interface-cnccontroller/units": "Deprecated. Not listening to this anymore. See next.",
+            // '/com-chilipeppr-widget-3dviewer/unitsChanged': "Listenting to see if the 3D Viewer is telling us that the user Gcode is in a specific coordinate and then just assuming we will only be sent axes coordinate updates in that unit. Not using /com-chilipeppr-interface-cnccontroller/units anymore."
         },
         init: function () {
 
             // Do UI setup
             this.initBody();
-            this.btnSetup();
-            this.menuSetup();
+            // this.btnSetup();  // these buttons don't exist anymore
+            // this.menuSetup();
             this.jogSetup();
             
-            this.pencilSetup();
+            // this.pencilSetup();
 
             this.forkSetup();
             this.toolbarSetup();
 
+            // setup subscribe so we get axes info for Cayenn device
+            this.setupOnRecvFromDeviceName();
+
+            /*
             // Subscribe to the signal published from the specific controller implementing the generic interface
             // for CNC controllers that normalizes the XYZ Axis updates so we don't have to worry about
             // the specific implementation
@@ -218,6 +74,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             // subscribe to the CNC controller broadcasting what
             // layer system we're in
             chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/coords', this.onCoordsUpdate.bind(this));
+            */
 
             // setup onconnect pubsub event
             /*
@@ -243,14 +100,69 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
 
             // setup cookie based UI settings
             this.setupUiFromCookie();
-            this.setupTouchArea();
-            this.setupShowHideTouchBtn();
+            // this.setupTouchArea();
+            // this.setupShowHideTouchBtn();
             // this.setupShowHideWcsBtn();
             // var that = this;
 
             this.createDomAxes();
 
             console.log(this.name + " done loading.");
+        },
+        /**
+         * Setup to get incoming data from Cayenn devices by their name.
+         */
+        setupOnRecvFromDeviceName: function() {
+            chilipeppr.subscribe('/com-chilipeppr-widget-cayenn/onRecvFromDeviceName', this, this.onRecvFromDeviceName);
+        },
+        /**
+         * Called when we get incoming data from Cayenn devices by their name.
+         */
+        onRecvFromDeviceName: function(payload) {
+            console.log("got onRecvFromDeviceName. payload:", payload);
+
+            // data looks like
+            /*
+            Addr: {IP: "10.0.0.175", Port: 60623, Network: "tcp", TcpOrUdp: "tcp"}
+            Announce: ""
+            DeviceId: "chip:0xa330aea4d6e7-ip:10.0.0.175"
+            JsonTag: "{"TransId":1,"Stat":{"Step":0,"Temp":-45.6,"Freq":10,"Motor":{"CSACTUAL":0,"fsactive":0,"olb":1,"stallGuard":0,"ola":1,"ot":0,"stst":1,"s2gb":0,"s2ga":0,"otpw":0,"SG_RESULT":0},"FanSpeed":0},"Resp":"StatusGet"}"
+            Name: "Wrist3"
+            Tag: {TransId: 1, Stat: {…}, Resp: "StatusGet"}
+            Widget: ""
+            */
+            
+            if (payload && payload.Name && payload.Name.length > 0) {
+                if (payload.Tag && "Step" in payload.Tag ) {
+                    // update axes val
+                    this.setAxesStepVal(payload.Name, payload.Tag.Step);
+                }
+            }
+        },
+        /**
+         * Set the axes value by name
+         */
+        setAxesStepVal: function(name, val) {
+            console.log("got setAxesStepVal. val:", val, "name:", name);
+            var el = $("#com-chilipeppr-widget-robot-axes-" + name);
+            
+            // do neg/positive
+            if (val < 0) {
+                el.find(".xyz-negpos").removeClass("xyz-dimmed");
+                val = Math.abs(val);
+            } else {
+                el.find(".xyz-negpos").addClass("xyz-dimmed");
+            }
+
+            var str = val + "";
+
+            // figure out how many digits to show grayed out
+            var grayDigits = 5 - str.length;
+            if (grayDigits < 0) grayDigits = 0;
+            el.find(".xyz-intgray").text("0".repeat(grayDigits));
+
+            // update main number
+            el.find(".xyz-intblack").text(str);
         },
         // This takes the template in the HTML and reproduces per axis to make this easier
         // since we have 6 and more for grippers
@@ -1587,17 +1499,17 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             // attach to focus and blur events
             // when focused, we'll jog
             var that = this;
-            $('#com-chilipeppr-widget-robot-axes-jog').popover();
-            $('#com-chilipeppr-widget-robot-axes-ftr .btn').popover();
+            // $('#com-chilipeppr-widget-robot-axes-jog').popover();
+            // $('#com-chilipeppr-widget-robot-axes-ftr .btn').popover();
 
 
             // setup button events
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogx').click("X+", this.jogBtn.bind(this));
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogy').click("Y+", this.jogBtn.bind(this));
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogz').click("Z+", this.jogBtn.bind(this));
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogxneg').click("X-", this.jogBtn.bind(this));
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogyneg').click("Y-", this.jogBtn.bind(this));
-            $('#com-chilipeppr-widget-robot-axes-ftr .jogzneg').click("Z-", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogx').click("X+", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogy').click("Y+", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogz').click("Z+", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogxneg').click("X-", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogyneg').click("Y-", this.jogBtn.bind(this));
+            // $('#com-chilipeppr-widget-robot-axes-ftr .jogzneg').click("Z-", this.jogBtn.bind(this));
 
             //gotoZero
             $('#com-chilipeppr-widget-robot-axes-ftr .joggotozerow').click("xyz", this.gotoZero.bind(this));
