@@ -99,8 +99,8 @@
 }
 .widget-robot-axes-dim {
     position: absolute;
-    top:0px;
-    right:14px;
+    top:4px;
+    right:8px;
     font-size:13px;
 }
 #com-chilipeppr-widget-robot-axes-ftr {
@@ -259,10 +259,10 @@
     padding:0;
 }
 #com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-fwd {
-    border-top-left-radius: 0px;
+    /* border-top-left-radius: 0px; */
 }
 #com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-rev {
-    border-bottom-left-radius: 0px;
+    /* border-bottom-left-radius: 0px; */
 }
     </style>
 
@@ -287,7 +287,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         url: "https://raw.githubusercontent.com/chilipeppr/widget-robot-axes/master/auto-generated-widget.html",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
         fiddleurl: "(Local dev. No edit URL)", // The edit URL. This can be auto-filled by runme.js in Cloud9 if you'd like, or just define it on your own to help people know where they can edit/fork your widget
         githuburl: "https://github.com/chilipeppr/widget-robot-axes", // The backing github repo
-        testurl: "http://localhost:9000/widget.html",   // The standalone working widget so can view it working by itself
+        testurl: "http://localhost:9005/widget.html",   // The standalone working widget so can view it working by itself
         name: "Widget / Robot Arm Axes",
         desc: "This widget lets you see the axes information for the 6 actuators on a robot arm plus grippers or other end units. It enables you to jog, home, and change units.",
         publish: {},
@@ -403,9 +403,16 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             */
             
             if (payload && payload.Name && payload.Name.length > 0) {
-                if (payload.Tag && "Stat" in payload.Tag && "Step" in payload.Tag.Stat ) {
-                    // update axes val
-                    this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+
+                if (payload.Tag && "Stat" in payload.Tag) {
+                    if ("Step" in payload.Tag.Stat ) {
+                        // update axes val
+                        this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+                    }
+                    if ("StepPcnt" in payload.Tag.Stat) {
+                        var el = $("#com-chilipeppr-widget-robot-axes-" + payload.Name + " .xyz-pulsecnt");
+                        el.text(payload.Tag.Stat.StepPcnt);
+                    }
                 }
             }
         },
@@ -2376,6 +2383,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                             </tr></table></h2>
 
                             <div class="widget-robot-axes-dim">steps</div>
+                            <div class="xyz-pulsecnt" style="position:absolute;bottom:4px;right:8px;color: #bbbbbb;">0</div>
                         </div>
                     </div>
                     <div class="col col-xs-2 btn-group-vertical per-axis-jog" style="">

@@ -133,9 +133,16 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             */
             
             if (payload && payload.Name && payload.Name.length > 0) {
-                if (payload.Tag && "Stat" in payload.Tag && "Step" in payload.Tag.Stat ) {
-                    // update axes val
-                    this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+
+                if (payload.Tag && "Stat" in payload.Tag) {
+                    if ("Step" in payload.Tag.Stat ) {
+                        // update axes val
+                        this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+                    }
+                    if ("StepPcnt" in payload.Tag.Stat) {
+                        var el = $("#com-chilipeppr-widget-robot-axes-" + payload.Name + " .xyz-pulsecnt");
+                        el.text(payload.Tag.Stat.StepPcnt);
+                    }
                 }
             }
         },

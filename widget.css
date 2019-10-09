@@ -83,8 +83,8 @@
 }
 .widget-robot-axes-dim {
     position: absolute;
-    top:0px;
-    right:14px;
+    top:4px;
+    right:8px;
     font-size:13px;
 }
 #com-chilipeppr-widget-robot-axes-ftr {
@@ -243,8 +243,8 @@
     padding:0;
 }
 #com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-fwd {
-    border-top-left-radius: 0px;
+    /* border-top-left-radius: 0px; */
 }
 #com-chilipeppr-widget-robot-axes .per-axis-jog button.jog-rev {
-    border-bottom-left-radius: 0px;
+    /* border-bottom-left-radius: 0px; */
 }
