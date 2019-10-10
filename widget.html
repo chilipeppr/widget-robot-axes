@@ -104,15 +104,15 @@
 
                                 </li>
                                 <li role="presentation" class="divider"></li> -->
-                                <li role="presentation" class="dropdown-header">1st layer coordinates: G53
-                                    <br/>Absolute physical machine coordinates</li>
-                                <li><a href="">Go To Machine Zero On <span class="axis-name">(Axis Name)</span> Axis (G53 G0 X0)</a>
+                                <!-- <li role="presentation" class="dropdown-header">1st layer coordinates: G53
+                                    <br/>Absolute physical machine coordinates</li> -->
+                                <li class="xyz-goto-zero"><a href="">Go To Zero On <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Gcode","Step":0})</span></a>
 
                                 </li>
-                                <li><a href="">Zero Out Machine <span class="axis-name">(Axis Name)</span> Axis (G28.3 X0)</a>
+                                <li class="xyz-zeroout"><a href="">Zero Out <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"ZeroOut"}</span></a>
 
                                 </li>
-                                <li><a href="">Home Machine <span class="axis-name">(Axis Name)</span> Axis (G28.2 X0) <span class="xyz-limitswitch">Limit Switch required</span></a>
+                                <li class="xyz-home"><a href=""><span class="glyphicon glyphicon-home"></span> Home <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Home"}</span> <span class="xyz-limitswitch">Hall sensor required</span></a>
 
                                 </li>
                             </ul>
@@ -133,13 +133,53 @@
                         <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
                             <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
                             <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
-                            <h2 class="widget-robot-axes-pos"><table><tr>
-                                <td style="width:70px;text-align:right;"><span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">0000</span><span class="xyz-intblack">0</span></td>
-                                <!-- <td>.<span class="xyz-decimal">000</span></td> -->
-                            </tr></table></h2>
+                            <h2 class="widget-robot-axes-pos">    
+                                <span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">0000</span><span class="xyz-intblack">0</span></td>
+                            </h2>
 
-                            <div class="widget-robot-axes-dim">steps</div>
-                            <div class="xyz-pulsecnt" style="position:absolute;bottom:4px;right:8px;color: #bbbbbb;">0</div>
+                            <div class="widget-robot-axes-dim">
+                                Steps <span class="xyz-pulsecnt" style="color: #bbbbbb;">0</span>
+                                
+                            </div>
+                            <div class="xyz-fan-temp" style="opacity: 0.5; position: absolute;bottom:4px;right:8px;">
+                                <div>
+                                    <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14">
+                                    <g transform="translate(-21.208957,-225.67417)" id="layer1">
+                                        <g transform="matrix(0.03633062,0,0,0.03633062,20.562243,223.56811)" id="g4560">
+                                            <path
+                                                style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                                                d="M 413.27734,223.11133 C 326.52129,222.6501 294.0983,295.1146 298.31055,331.44531 c 0.54776,27.38669 -4.84565,51.54787 44.0625,135.41797 a 98.425293,97.410595 0 0 0 -32.14649,33.83594 c -21.122,-4.60596 -46.73045,-23.3315 -64.88476,-40.57813 -22.09701,-20.99217 -40.32684,-52.48058 -80.10157,-49.16601 -39.77477,3.31453 -75.682358,10.49715 -83.968746,107.17187 -8.286425,96.67476 69.605176,132.58151 107.722656,128.16211 26.5474,-0.53098 50.06493,4.52342 127.87305,-39.71289 a 98.425293,97.410595 0 0 0 33.74219,28.46875 c 1.84966,22.60883 -20.89817,54.99391 -41.53126,76.71289 -20.99217,22.09705 -52.48058,40.32684 -49.16601,80.10157 3.31453,39.77472 10.4952,75.68431 107.16992,83.9707 96.67475,8.28642 132.58347,-69.60713 128.16406,-107.72461 -0.55245,-27.62136 4.97011,-51.92851 -45.30078,-137.55469 0,0 -0.55814,-0.15291 -0.61914,-0.16992 a 98.425293,97.410595 0 0 0 30.68164,-31.48047 c 21.82579,2.85891 49.64168,22.93123 68.98828,41.31055 22.09705,20.99221 40.32684,52.48058 80.10157,49.16601 39.77476,-3.31453 75.68236,-10.49711 83.96875,-107.17187 8.28642,-96.67476 -69.60518,-132.58151 -107.72266,-128.16211 -26.58146,0.53163 -50.1244,-4.53887 -128.17187,39.88086 a 98.425293,97.410595 0 0 0 -34.31641,-30.8711 c -0.79877,-22.52624 21.42824,-54.00204 41.62305,-75.25976 20.99225,-22.09707 52.48058,-40.32876 49.16601,-80.10352 C 530.33,267.9147 523.14937,232.00711 426.47461,223.7207 c -4.53162,-0.38842 -8.93056,-0.58669 -13.19727,-0.60937 z m -17.5625,243.09765 a 82.392927,82.392927 0 0 1 82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39257,-82.39258 82.392927,82.392927 0 0 1 82.39257,-82.39258 z"
+                                                transform="scale(0.26458333)" id="path4541" />
+                                            <circle id="path3728" cx="104.17062" cy="145.15083" r="10.691406"
+                                                style="fill:#000000;fill-opacity:1;stroke-width:0.2082229" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="xyz-fan-pct">-</span>%
+                                </div>
+                                <div>
+                                    <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14">
+                                
+                                        <g transform="translate(-21.208957,-225.67417)" id="layer1">
+                                            <g id="g4614">
+                                                <g id="g4592" transform="translate(-2.7880329,-0.01871163)" style="fill:#000000;fill-opacity:1">
+                                                    <path style="fill:#000000;fill-opacity:1;stroke-width:0.99999994"
+                                                        d="M 22.470703,0.26367188 A 2.7337369,2.7337369 0 0 0 19.746094,2.796875 h -0.02734 v 13.347656 a 4.2672968,4.2672968 0 0 0 -1.515625,3.253907 4.2672968,4.2672968 0 0 0 4.267578,4.267578 4.2672968,4.2672968 0 0 0 4.265625,-4.267578 4.2672968,4.2672968 0 0 0 -1.515625,-3.261719 V 2.796875 h -0.02344 A 2.7337369,2.7337369 0 0 0 22.470703,0.26367188 Z"
+                                                        transform="matrix(0.26458333,0,0,0.26458333,21.208957,225.67417)" id="path4573" />
+                                                </g>
+                                                <path style="fill:#fffeff;fill-opacity:1;stroke-width:0.26458332"
+                                                    d="m 24.36479,226.206 a 0.35282989,0.29108463 0 0 0 -0.35295,0.29145 0.35282989,0.29108463 0 0 0 5.17e-4,0.009 h -0.01809 v 3.64784 a 0.74094276,0.74094276 0 0 0 -0.377238,0.6444 0.74094276,0.74094276 0 0 0 0.74104,0.74104 0.74094276,0.74094276 0 0 0 0.74104,-0.74104 0.74094276,0.74094276 0 0 0 -0.381372,-0.6475 v -3.64474 h -5.17e-4 a 0.35282989,0.29108463 0 0 0 5.17e-4,-0.009 0.35282989,0.29108463 0 0 0 -0.35295,-0.29145 z"
+                                                    id="rect4582" />
+                                                <path style="fill:#000000;fill-opacity:1;stroke-width:0.26458332"
+                                                    d="m 24.346048,228.99294 a 0.18087908,0.18087908 0 0 0 -0.180868,0.18087 0.18087908,0.18087908 0 0 0 0.01292,0.0667 v 1.10639 a 0.49273959,0.49273959 0 0 0 -0.318326,0.46095 0.49273959,0.49273959 0 0 0 0.492993,0.493 0.49273959,0.49273959 0 0 0 0.492476,-0.493 0.49273959,0.49273959 0 0 0 -0.324528,-0.4625 v -1.125 a 0.18087908,0.18087908 0 0 0 0.0062,-0.0465 0.18087908,0.18087908 0 0 0 -0.180867,-0.18087 z"
+                                                    id="path4603" />
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <span class="xyz-temp-c">-</span>&deg;C
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                     <div class="col col-xs-2 btn-group-vertical per-axis-jog" style="">
@@ -164,11 +204,11 @@
                                 <!-- <button class="btn btn-xs btn-default jogzerooutw " id="jogzerooutw" data-toggle="popover" data-placement="top" data-title="Set Active Coordinate Zero Here" data-content="Sets active work coordinate system zero to current machine position." data-html="true"
                                 data-delay="800" data-trigger="hover" data-container="body">Set <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button> -->
                                 <button class="btn btn-xs btn-default joggotozerom" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, absolute machine coordinate" data-content="G53 G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in absolute machine coordinate system; individual moves available via axis drop down menus above."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Go To Mch Zero</button>
+                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Go To Zero on All Axes</button>
                                 <button class="btn btn-xs btn-default jogzerooutm " data-toggle="popover" data-placement="top" data-title="Set Machine Zero on All Axes" data-content="G28.3 X0 Y0 Z0 A0<br/>Sets hardware zero (G53) to the current position.  Useful if machine does not have limit switches."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Set Mch Zero</button>
+                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Zero Out All Axes</button>
                                 <button class="btn btn-xs btn-default joghomem " data-toggle="popover" data-placement="top" data-title="Homing Sequence" data-content="G28.2 X0 Y0 Z0 A0<br/>Runs homing cycle on all axes. MUST have home/limit switches" data-html="true" data-delay="200"
-                                data-trigger="hover" data-container="body" style="background-color:#eef1ee">Home <span class="glyphicon glyphicon-home"></span> Mch</button>
+                                data-trigger="hover" data-container="body" style="background-color:#eef1ee"><span class="glyphicon glyphicon-home"></span> Home All Axes</button>
                             </div>
                         </td>
                         <td class="col xcol-xs-2" style="border:0px green solid;padding-left:4px;">

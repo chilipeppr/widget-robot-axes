@@ -39,7 +39,6 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
 
             // Do UI setup
             this.initBody();
-            // this.btnSetup();  // these buttons don't exist anymore
             // this.menuSetup();
             this.jogSetup();
             
@@ -51,63 +50,21 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             // setup subscribe so we get axes info for Cayenn device
             this.setupOnRecvFromDeviceName();
 
-            /*
-            // Subscribe to the signal published from the specific controller implementing the generic interface
-            // for CNC controllers that normalizes the XYZ Axis updates so we don't have to worry about
-            // the specific implementation
-            chilipeppr.subscribe("/com-chilipeppr-interface-cnccontroller/axes", this, this.updateAxesFromStatus);
-
-            // Update units if we get a notification published to us
-            chilipeppr.subscribe("/com-chilipeppr-interface-cnccontroller/units", this, this.updateUnitsFromStatus);
-            chilipeppr.subscribe('/com-chilipeppr-widget-3dviewer/unitsChanged', this, this.updateUnitsFromStatus);
-            // in case we didn't get loaded fast enough, thus we never got the /unitsChanged event from the 3d viewer, we better double check here and fire off a request just to cover all our bases
-            chilipeppr.subscribe('/com-chilipeppr-widget-3dviewer/recvUnits', this, this.updateUnitsFromStatus);
-            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/requestUnits', "");
-
-            // Subscribe to the generic interface signals of plannerresume/plannerpause so we know when to slow
-            // down on our sending of gcode commands when jogging. 
-            // If a different controller is implemented, they can send on these signals
-            // and abstract away the specific hardware details from us so this widget is reusable
-            chilipeppr.subscribe("/com-chilipeppr-interface-cnccontroller/plannerpause", this, this.onPlannerPause);
-            chilipeppr.subscribe("/com-chilipeppr-interface-cnccontroller/plannerresume", this, this.onPlannerResume);
-
-            // subscribe to the CNC controller broadcasting what
-            // layer system we're in
-            chilipeppr.subscribe('/com-chilipeppr-interface-cnccontroller/coords', this.onCoordsUpdate.bind(this));
-            */
-
-            // setup onconnect pubsub event
-            /*
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/onconnect", this, function (msg) {
-                console.log("got onconnect so will query for status");
-            });
-            */
-
-            // setup recv pubsub event
-            // this is when we receive data in a per line format from the serial port
-            /*
-            chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvline", this, function (msg) {
-                this.onRecvCmd(msg);
-            });
-            */
-
-
             // setup DOM elements for the Axes in the UI
             this.setupAxes();
 
-            // setup controller specific init items
-            //this.initControllerSpecific();
-
             // setup cookie based UI settings
             this.setupUiFromCookie();
-            // this.setupTouchArea();
-            // this.setupShowHideTouchBtn();
-            // this.setupShowHideWcsBtn();
-            // var that = this;
 
             this.createDomAxes();
 
             console.log(this.name + " done loading.");
+        },
+        /**
+         * Method for sending to Cayenn device
+         */
+        send: function(name, obj) {
+            chilipeppr.publish("/com-chilipeppr-widget-cayenn/sendToDeviceNameViaTcp", name, obj ) 
         },
         /**
          * Setup to get incoming data from Cayenn devices by their name.
@@ -135,13 +92,39 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             if (payload && payload.Name && payload.Name.length > 0) {
 
                 if (payload.Tag && "Stat" in payload.Tag) {
+
+                    var el = $("#com-chilipeppr-widget-robot-axes-" + name);
+
                     if ("Step" in payload.Tag.Stat ) {
                         // update axes val
-                        this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+                        // this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+                    
+                        // do neg/positive
+                        if (val < 0) {
+                            el.find(".xyz-negpos").removeClass("xyz-dimmed");
+                            val = Math.abs(val);
+                        } else {
+                            el.find(".xyz-negpos").addClass("xyz-dimmed");
+                        }
+
+                        var str = val + "";
+
+                        // figure out how many digits to show grayed out
+                        var grayDigits = 5 - str.length;
+                        if (grayDigits < 0) grayDigits = 0;
+                        el.find(".xyz-intgray").text("0".repeat(grayDigits));
+
+                        // update main number
+                        el.find(".xyz-intblack").text(str);
                     }
                     if ("StepPcnt" in payload.Tag.Stat) {
-                        var el = $("#com-chilipeppr-widget-robot-axes-" + payload.Name + " .xyz-pulsecnt");
-                        el.text(payload.Tag.Stat.StepPcnt);
+                        el.find(".xyz-pulsecnt").text(payload.Tag.Stat.StepRmt);
+                    }
+                    if ("Fan" in payload.Tag.Stat) {
+                        el.find(".xyz-fan-pct").text(payload.Tag.Stat.Fan);
+                    }
+                    if ("Temp" in payload.Tag.Stat) {
+                        el.find(".xyz-temp-c").text(payload.Tag.Stat.Temp);
                     }
                 }
             }
@@ -326,621 +309,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             tgtEl.find('.xyz-pencil').remove();
             tgtEl.find('.xyz-number').remove();
         },
-        initAs3dPrinting: function () {
-            // by default we'll show the A/B/C axes
-            $('#com-chilipeppr-widget-robot-axes-a').removeClass("hidden");
-            $('#com-chilipeppr-widget-robot-axes-b').removeClass("hidden");
-            // change labels
-            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-label').text("E0");
-            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-label').text("E1");
-            // change units
-            $('#com-chilipeppr-widget-robot-axes-a .widget-robot-axes-dim').text("mm");
-            $('#com-chilipeppr-widget-robot-axes-b .widget-robot-axes-dim').text("mm");
-
-        },
-        setupShowHideWcsBtn: function () {
-
-            var btnEl = $("#com-chilipeppr-widget-robot-axes .btnToggleShowWcs");
-            btnEl.click(this.toggleWcs.bind(this));
-            btnEl.popover();
-            chilipeppr.load(
-                "#com-chilipeppr-widgetholder-wcs", 
-                //"http://fiddle.jshell.net/Danal/4ete4691/show/light/",
-                "http://raw.githubusercontent.com/chilipeppr/widget-wcs/master/auto-generated-widget.html",
-                function () {
-                cprequire(["inline:com-chilipeppr-widget-wcs"], function (wcs) {
-                    console.log("test running of " + wcs.id);
-                    wcs.init();
-                });
-            });
-        },
-        toggleWcs: function (evt) {
-            $("#com-chilipeppr-widget-robot-axes .btnToggleShowWcs").popover('hide');
-            var wcsEl = $('#com-chilipeppr-widgetholder-wcs');
-            if (wcsEl.hasClass("hidden")) {
-                wcsEl.removeClass("hidden");
-                $('#com-chilipeppr-widget-robot-axes .btnToggleShowWcs').addClass("active");
-            } else {
-                wcsEl.addClass("hidden");
-                $('#com-chilipeppr-widget-robot-axes .btnToggleShowWcs').removeClass("active");
-
-            }
-        },
-        setupShowHideTouchBtn: function () {
-            $("#com-chilipeppr-widget-robot-axes .btnToggleShowTouchJog").popover();
-            //$( window ).resize(this.showHideTouchBtn.bind(this));
-            this.showHideTouchBtn();
-            $(window).resize(this.showHideTouchBtn.bind(this));
-        },
-        showHideTouchBtn: function () {
-            //console.log("should we show or hide the touch btn");
-            var btnEl = $("#com-chilipeppr-widget-robot-axes .btnShowTouchJog");
-            var btnParentWidth = btnEl.parent().parent().width();
-            var widgetWidth = $("#com-chilipeppr-widget-robot-axes").width();
-            console.log("btnParentWidth:", btnParentWidth, "widgetWidth:", widgetWidth);
-            //console.log("btnEl:", btnEl, "parent:", btnEl.parent(), "btnEl.parent().width()", btnEl.parent().width(), "btnEl.parent().parent().width()", btnEl.parent().parent().width());
-            //console.log("btnEl.parent().parent().width()", btnEl.parent().parent().width(), "btnEl.parent().parent().width()", btnEl.parent().parent().parent().parent().width());
-            if (btnParentWidth > widgetWidth) {
-                console.log("it appears the btn is being clipped");
-                btnEl.css('visibility', 'hidden');
-                btnEl.addClass("hidden");
-                //apply class1
-            } else {
-                //apply class2
-                btnEl.css('visibility', 'visible');
-                btnEl.removeClass("hidden");
-                console.log("it appears the btn is NOT being clipped");
-            }
-        },
-        canvas: null,
-        el: null,
-        ctx: null,
-        setupTouchArea: function () {
-            this.canvas = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay canvas');
-            var tpad = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay');
-
-            console.log("tpad:", tpad);
-
-            /*
-            this.canvas.width(tpad.width());
-            this.canvas.height(tpad.height());
-            this.canvas.prop({
-                    width: tpad.width(),
-                    height: tpad.height()
-                });
-                */
-            this.el = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay canvas')[0];
-            this.canvasResize();
-            //this.ctx = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay canvas')[0].getContext("2d");
-            var that = this;
-
-            tpad.bind("touchstart", function (e) {
-                //console.log("about to dish touchstart evt:", e);
-                that.handleStart(e);
-            });
-            tpad.bind("touchend", this.handleEnd.bind(this));
-            tpad.bind("touchcancel", this.handleCancel.bind(this));
-            tpad.bind("touchleave", this.handleEnd.bind(this));
-            tpad.bind("touchmove", this.handleMove.bind(this));
-
-            /*
-            tpad.bind('touchstart', function(e){
-                console.log("got touch/mouse evt:", e);
-                that.drawCircle(ctx, e); 
-            });
-            tpad.bind('touchend', function(e){
-                console.log("got touch/mouse evt:", e);
-                that.drawCircle(ctx, e);
-            });
-            */
-
-            // setup toggle buttons
-            $('#com-chilipeppr-widget-robot-axes .btnToggleShowTouchJog').click(this.toggleTouchJog.bind(this));
-
-            $(window).resize(this.canvasResize.bind(this));
-            //this.toggleTouchJog();
-
-            // scrolling
-            tpad.bind('mousewheel DOMMouseScroll', this.onScroll.bind(this));
-
-            // mouse movements
-            tpad.bind("mousedown", this.onMouseDown.bind(this));
-            tpad.bind("mousemove", this.onMouseMove.bind(this));
-            tpad.bind("mouseup", this.onMouseUp.bind(this));
-
-            this.log("touch area setup");
-        },
-        toggleTouchJog: function () {
-            $('#com-chilipeppr-widget-robot-axes .btnToggleShowTouchJog').popover('hide');
-            var tpad = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay');
-            if (tpad.hasClass("hidden")) {
-                tpad.removeClass("hidden");
-                this.canvasResize();
-                $('#com-chilipeppr-widget-robot-axes .btnToggleShowTouchJog').addClass("active");
-            } else {
-                tpad.addClass("hidden");
-                $('#com-chilipeppr-widget-robot-axes .btnToggleShowTouchJog').removeClass("active");
-
-            }
-        },
-        canvasResize: function () {
-            console.log("touchpad resizing");
-            var tpad = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay');
-
-            this.canvas.width(tpad.width());
-            this.canvas.height(tpad.height());
-            this.canvas.prop({
-                width: tpad.width(),
-                height: tpad.height()
-            });
-            //this.el = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay canvas')[0];
-            this.ctx = $('#com-chilipeppr-widget-robot-axes .touchpad-overlay canvas')[0].getContext("2d");
-            this.drawText();
-        },
-        drawText: function () {
-            var x = this.el.width / 2;
-            var y = this.el.height / 2;
-
-            this.ctx.font = '14pt "Helvetica Neue",Helvetica,Arial,sans-serif';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillStyle = 'silver';
-            this.ctx.fillText('Touch/Mouse/Scroll', x, y - 8);
-            this.ctx.fillText('Jog Area', x, y + 8);
-        },
-        isMouseDown: false,
-        mouseLastOffset: {
-            x: 0,
-            y: 0
-        },
-        onMouseDown: function (evt) {
-            console.log("onMouseDown:", evt);
-            this.isMouseDown = true;
-            //inside my mouse events handler:
-            var target = evt.target || evt.srcElement,
-                rect = target.getBoundingClientRect(),
-                offsetX = evt.clientX - rect.left,
-                offsetY = evt.clientY - rect.top;
-            anOffsetX = offsetX;
-            anOffsetY = offsetY;
-            console.log("mouse anOffsetX:", anOffsetX, "anOffsetY:", anOffsetY);
-
-            this.mouseLastOffset.x = anOffsetX; //evt.offsetX;
-            this.mouseLastOffset.y = anOffsetY; //evt.offsetY;
-            console.log("mouseLastOffset:", this.mouseLastOffset);
-            this.canvas.css('cursor', 'default');
-            var ctx = this.ctx;
-            ctx.beginPath();
-            ctx.arc(this.mouseLastOffset.x, this.mouseLastOffset.y, 10, 0, 2 * Math.PI, true); // a circle at the start
-            ctx.fillStyle = 'rgba(0,0,255,0.1)';
-            ctx.strokeStyle = 'rgba(0,0,0,0)';
-            ctx.lineWidth = 0;
-            ctx.fill();
-            ctx.stroke();
-        },
-        onMouseMove: function (evt) {
-            if (!this.isMouseDown) {
-                return;
-            }
-            console.log("onMouseMove:", evt);
-            var target = evt.target || evt.srcElement,
-                rect = target.getBoundingClientRect(),
-                offsetX = evt.clientX - rect.left,
-                offsetY = evt.clientY - rect.top;
-            anOffsetX = offsetX;
-            anOffsetY = offsetY;
-            console.log("mouse anOffsetX:", anOffsetX, "anOffsetY:", anOffsetY);
-
-            var deltax = anOffsetX - this.mouseLastOffset.x;
-            var deltay = (anOffsetY - this.mouseLastOffset.y) * -1;
-            console.log("deltax:", deltax, "deltay", deltay);
-            var newpos = {
-                x: anOffsetX,
-                y: anOffsetY
-            };
-            //this.sendMove(0, this.mouseLastOffset, {x:deltax, y:deltay});
-            this.sendMove(0, this.mouseLastOffset, newpos);
-
-            var ctx = this.ctx;
-            ctx.moveTo(this.mouseLastOffset.x, this.mouseLastOffset.y);
-            ctx.lineTo(newpos.x, newpos.y);
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = 'rgba(0,0,255,0.1)';
-            ctx.stroke();
-
-            this.mouseLastOffset = newpos;
-        },
-        onMouseUp: function (evt) {
-            console.log("onMouseUp:", evt);
-            this.isMouseDown = false;
-
-            var target = evt.target || evt.srcElement,
-                rect = target.getBoundingClientRect(),
-                offsetX = evt.clientX - rect.left,
-                offsetY = evt.clientY - rect.top;
-            anOffsetX = offsetX;
-            anOffsetY = offsetY;
-            console.log("mouse anOffsetX:", anOffsetX, "anOffsetY:", anOffsetY);
-
-            var ctx = this.ctx;
-            ctx.lineWidth = 14;
-            ctx.fillStyle = 'rgba(0,0,255,0.2)';
-            ctx.beginPath();
-            ctx.moveTo(this.mouseLastOffset.x, this.mouseLastOffset.y);
-            ctx.lineTo(anOffsetX, anOffsetY);
-            ctx.fillRect(anOffsetX - 9, anOffsetY - 9, 18, 18); // and a square at the end
-
-            this.sendDone();
-            this.fadeCanvas();
-        },
-        scrollPrev: {
-            x: 0,
-            y: 0
-        },
-        scrollFadeTimer: null,
-        scrollLastPosDir: "up",
-        onScroll: function (evt) {
-            console.log("onScroll:", evt.originalEvent); //, evt.originalEvent.wheelDelta);
-            evt.preventDefault();
-
-            // fix for firefox. detect DOMMouseScroll
-            if ("type" in evt && evt.type.match(/^D/)) {
-                console.log("detected firefox.");
-                evt.originalEvent.wheelDelta = evt.originalEvent.detail * -10;
-                evt.originalEvent.wheelDeltaX = 0;
-                evt.originalEvent.wheelDeltaY = 0;
-                if (evt.originalEvent.axis == 2) {
-                    // left/right scroll
-                    evt.originalEvent.wheelDeltaY = evt.originalEvent.wheelDelta;
-                } else {
-                    evt.originalEvent.wheelDeltaX = evt.originalEvent.wheelDelta;
-                }
-            }
-            // see if user changed positions. if so, cancel all moves.
-            //if (evt.originalEvent.wheelDelta /120 > 0) {
-            if (evt.originalEvent.wheelDelta > 0) {
-                console.log('scrolling up !');
-                if (this.scrollLastPosDir != "up") {
-                    this.sendDone();
-                    this.scrollLastPosDir = "up";
-                }
-            } else {
-                console.log('scrolling down !');
-                if (this.scrollLastPosDir != "dn") {
-                    this.sendDone();
-                    this.scrollLastPosDir = "dn";
-                }
-            }
-
-            var newpos = {
-                x: evt.originalEvent.wheelDeltaX,
-                y: evt.originalEvent.wheelDeltaY
-            };
-            // divide by 10 to slow down to sort of match touch/mouse
-            //newpos.x = newpos.x / 10;
-            //newpos.y = newpos.y / 10;
-            this.sendMove(0, {
-                x: 0,
-                y: 0
-            }, {
-                x: newpos.x / 10,
-                y: newpos.y / 10
-            });
-
-            var x = this.el.width / 2;
-            var y = this.el.height / 2;
-
-            var ctx = this.ctx;
-            ctx.beginPath();
-            var moveTo = {
-                x: this.scrollPrev.x + x,
-                y: this.scrollPrev.y + y
-            };
-            moveTo = {
-                x: x,
-                y: y
-            };
-            console.log("moveTo:", moveTo);
-            ctx.moveTo(moveTo.x, moveTo.y);
-            var lineTo = {
-                x: moveTo.x + newpos.x,
-                y: moveTo.y + newpos.y
-            };
-            // logarithmically adjust
-            //var xSign = -1 ? lineTo.x < 0 : 1;
-            //lineTo.x = Math.log(Math.abs(lineTo.x)) * xSign;
-            if (newpos.y !== 0) {
-                var ySign = newpos.y < 0 ? -1 : 1;
-                lineTo.y = (Math.log(Math.abs(newpos.y)) * ySign * 25) + y;
-            }
-            if (newpos.x !== 0) {
-                var xSign = newpos.x < 0 ? -1 : 1;
-                lineTo.x = (Math.log(Math.abs(newpos.x)) * xSign * 25) + x;
-            }
-
-            console.log("lineTo:", lineTo);
-            ctx.lineTo(lineTo.x, lineTo.y);
-            ctx.lineWidth = 32;
-            ctx.strokeStyle = 'rgba(0,0,0,0.025)';
-            ctx.stroke();
-
-            this.scrollPrev.x += newpos.x;
-            this.scrollPrev.y += newpos.y;
-
-            var that = this;
-            if (this.scrollFadeTimer) {
-                clearTimeout(this.scrollFadeTimer);
-                that.scrollPrev.x = 0;
-                that.scrollPrev.y = 0;
-            }
-            this.scrollFadeTimer = setTimeout(function () {
-                that.scrollPrev.x = 0;
-                that.scrollPrev.y = 0;
-                that.ctx.clearRect(0, 0, that.el.width, that.el.height);
-                that.drawText();
-            }, 100);
-            //this.fadeCanvas();
-        },
-        ongoingTouches: [], // new Array;
-        start: {
-            x: 0,
-            y: 0
-        },
-        inZMode: false,
-        handleStart: function (evt) {
-
-            console.log("touchstart. evt:", evt);
-            var el = this.el; //= document.getElementsByTagName("canvas")[0];
-            var ctx = this.ctx; // el.getContext("2d");
-            var touches = evt.originalEvent.changedTouches;
-
-            var offset = this.findPos(el);
-
-
-            for (var i = 0; i < touches.length; i++) {
-                if (touches[i].clientX - offset.x > 0 && touches[i].clientX - offset.x < parseFloat(el.width) && touches[i].clientY - offset.y > 0 && touches[i].clientY - offset.y < parseFloat(el.height)) {
-                    evt.preventDefault();
-                    this.log("touchstart:" + i + "...");
-                    this.ongoingTouches.push(this.copyTouch(touches[i]));
-                    var color = this.colorForTouch(touches[i]);
-                    ctx.beginPath();
-                    ctx.arc(touches[i].clientX - offset.x, touches[i].clientY - offset.y, 14, 0, 2 * Math.PI, false); // a circle at the start
-                    ctx.fillStyle = color;
-                    ctx.fill();
-                    this.log("touchstart:" + i + ".");
-                }
-            }
-        },
-        //divider: 10,
-        sendCtr: 0,
-        sendMove: function (touchid, prevpos, newpos) {
-
-            var deltax = newpos.x - prevpos.x;
-            var deltay = newpos.y - prevpos.y;
-
-            if (deltax === 0 && deltay === 0) {
-                console.log("no move happened. returning.");
-                return;
-            }
-
-            var gcode = "G91 G0 ";
-            if (deltax !== 0) {
-                gcode += "X" + (deltax * this.accelBaseval).toFixed(3) + " ";
-            }
-            if (deltay !== 0) {
-                gcode += "Y" + (deltay * this.accelBaseval * -1).toFixed(3) + " ";
-            }
-            gcode += "\nG90\n";
-            //chilipeppr.publish("/com-chilipeppr-widget-serialport/send", gcode);          
-            var jsonSend = {
-                D: gcode,
-                Id: "jog" + this.sendCtr
-            };
-            chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", jsonSend);
-            this.sendCtr++;
-            if (this.sendCtr > 999999) this.sendCtr = 0;
-
-        },
-        sendDone: function () {
-            chilipeppr.publish("/com-chilipeppr-widget-serialport/send", "!\n%\n");
-            setTimeout(function () {
-                chilipeppr.publish("/com-chilipeppr-widget-serialport/send", "%\n");
-            }, 200);
-        },
-        sendMoveZ: function (touchid, prevpos, newpos) {
-
-            //var deltax = newpos.x - prevpos.x;
-            var deltaz = newpos.y - prevpos.y;
-
-            if (deltaz === 0) {
-                console.log("no z move happened. returning.");
-                return;
-            }
-
-            var gcode = "G91 G0 ";
-            gcode += "Z" + (deltaz * this.accelBaseval) + " ";
-            gcode += "\nG90\n";
-            chilipeppr.publish("/com-chilipeppr-widget-serialport/send", gcode);
-
-        },
-        handleMove: function (evt) {
-
-            var el = this.el; //document.getElementsByTagName("canvas")[0];
-            var ctx = this.ctx; //el.getContext("2d");
-            var touches = evt.originalEvent.changedTouches;
-            var offset = this.findPos(el);
-
-            for (var i = 0; i < touches.length; i++) {
-                if (touches[i].clientX - offset.x > 0 && touches[i].clientX - offset.x < parseFloat(el.width) && touches[i].clientY - offset.y > 0 && touches[i].clientY - offset.y < parseFloat(el.height)) {
-                    evt.preventDefault();
-                    var color = this.colorForTouch(touches[i]);
-                    var idx = this.ongoingTouchIndexById(touches[i].identifier);
-
-                    if (idx >= 0) {
-                        //this.log("continuing touch " + idx);
-                        ctx.beginPath();
-                        //this.log("ctx.moveTo(" + this.ongoingTouches[idx].clientX + ", " + this.ongoingTouches[idx].clientY + ");");
-                        var prevpos = {
-                            x: this.ongoingTouches[idx].clientX - offset.x,
-                            y: this.ongoingTouches[idx].clientY - offset.y
-                        };
-                        ctx.moveTo(prevpos.x, prevpos.y);
-                        //ctx.moveTo(this.ongoingTouches[idx].clientX-offset.x, this.ongoingTouches[idx].clientY-offset.y);
-                        //this.log("ctx.lineTo(" + touches[i].clientX + ", " + touches[i].clientY + ");");
-                        var newpos = {
-                            x: touches[i].clientX - offset.x,
-                            y: touches[i].clientY - offset.y
-                        };
-                        ctx.lineTo(newpos.x, newpos.y);
-                        //ctx.lineTo(touches[i].clientX-offset.x, touches[i].clientY-offset.y);
-                        ctx.lineWidth = 12;
-                        ctx.strokeStyle = color;
-                        ctx.stroke();
-
-                        if (idx === 0) this.sendMove(idx, prevpos, newpos);
-                        //if (idx == 1) this.sendMoveZ(idx, prevpos, newpos);
-
-                        this.ongoingTouches.splice(idx, 1, this.copyTouch(touches[i])); // swap in the new touch record
-                        //this.log(".");
-                    } else {
-                        this.log("can't figure out which touch to continue");
-                    }
-                }
-            }
-        },
-        handleEnd: function (evt) {
-
-            console.log("touchend/touchleave. evt:", evt);
-            var el = this.el; //document.getElementsByTagName("canvas")[0];
-            var ctx = this.ctx; //el.getContext("2d");
-            var touches = evt.originalEvent.changedTouches;
-            var offset = this.findPos(el);
-
-            for (var i = 0; i < touches.length; i++) {
-                if (touches[i].clientX - offset.x > 0 && touches[i].clientX - offset.x < parseFloat(el.width) && touches[i].clientY - offset.y > 0 && touches[i].clientY - offset.y < parseFloat(el.height)) {
-                    evt.preventDefault();
-                    var color = this.colorForTouch(touches[i]);
-                    var idx = this.ongoingTouchIndexById(touches[i].identifier);
-
-                    if (idx >= 0) {
-                        ctx.lineWidth = 14;
-                        ctx.fillStyle = color;
-                        ctx.beginPath();
-                        ctx.moveTo(this.ongoingTouches[idx].clientX - offset.x, this.ongoingTouches[idx].clientY - offset.y);
-                        ctx.lineTo(touches[i].clientX - offset.x, touches[i].clientY - offset.y);
-                        ctx.fillRect(touches[i].clientX - 14 - offset.x, touches[i].clientY - 14 - offset.y, 18, 18); // and a square at the end
-                        this.ongoingTouches.splice(i, 1); // remove it; we're done
-
-                    } else {
-                        this.log("can't figure out which touch to end");
-                    }
-                }
-            }
-            this.ongoingTouches = [];
-            this.sendDone();
-            this.fadeCanvas();
-        },
-        handleCancel: function (evt) {
-            evt.preventDefault();
-            this.log("touchcancel.");
-            var touches = evt.originalEvent.changedTouches;
-
-            for (var i = 0; i < touches.length; i++) {
-                this.ongoingTouches.splice(i, 1); // remove it; we're done
-            }
-        },
-        colorForTouch: function (touch) {
-            var r = touch.identifier % 16;
-            var g = Math.floor(touch.identifier / 3) % 16;
-            var b = Math.floor(touch.identifier / 7) % 16;
-            r = r.toString(16); // make it a hex digit
-            g = g.toString(16); // make it a hex digit
-            b = b.toString(16); // make it a hex digit
-            var color = "#" + r + g + b;
-            if (touch.identifier === 0) color = 'rgba(0,0,0,0.35)'; //"#dddddd";
-            if (touch.identifier === 1) color = 'rgba(200,200,200,0.25)'; //"#dddddd";
-            if (touch.identifier === 2) color = 'rgba(255,0,0,0.25)';
-            //this.log("color for touch with identifier " + touch.identifier + " = " + color);
-            return color;
-        },
-        copyTouch: function (touch) {
-            return {
-                identifier: touch.identifier,
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            };
-        },
-        ongoingTouchIndexById: function (idToFind) {
-            for (var i = 0; i < this.ongoingTouches.length; i++) {
-                var id = this.ongoingTouches[i].identifier;
-
-                if (id == idToFind) {
-                    return i;
-                }
-            }
-            return -1; // not found
-        },
-        log: function (msg) {
-            console.log(msg);
-            //var p = document.getElementById('log');
-            //p.innerHTML = msg + "\n" + p.innerHTML;
-        },
-        findPos: function (obj) {
-            var curleft = 0,
-                curtop = 0;
-
-            if (obj.offsetParent) {
-                do {
-                    curleft += obj.offsetLeft;
-                    curtop += obj.offsetTop;
-                } while (obj = obj.offsetParent);
-
-                return {
-                    x: curleft - document.body.scrollLeft,
-                    y: curtop - document.body.scrollTop
-                };
-            }
-        },
-        lastImage: null,
-        fadeCanvas: function () {
-            //console.log("fadeCanvas. this.el:", this.el);
-            this.lastImage = this.ctx.getImageData(0, 0, this.el.width, this.el.height);
-            this.fadeCtr = 0;
-            this.fadeCanvasStep();
-        },
-        fadeCtr: 0,
-        fadeCanvasStep: function () {
-
-            //console.log("fadeCanvasStep");
-            var pixelData = this.lastImage.data;
-            var len = pixelData.length;
-            for (var i = 3; i < len; i += 4) {
-                pixelData[i] -= 50;
-            }
-            this.ctx.putImageData(this.lastImage, 0, 0);
-            //this.drawText();
-            this.fadeCtr++;
-            if (this.fadeCtr >= 255 / 50) {
-                this.drawText();
-                //console.log("done fading");
-                return;
-            }
-            setTimeout(this.fadeCanvasStep.bind(this), 50);
-        },
-        drawCircle: function (ctx, e) {
-            var x, y;
-            if (e.type.match(/touch/)) {
-                x = e.originalEvent.changedTouches[0].clientX;
-                y = e.originalEvent.changedTouches[0].clientY;
-            } else {
-                x = e.offsetX;
-                y = e.offsetY;
-            }
-            console.log("drawCircle. x:", x, "y:", y);
-            ctx.beginPath();
-            ctx.arc(x, y, 10, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.fill();
-        },
+        
         toolbarSetup: function () {
             // config the css sizes to get more compact display
             var config = localStorage.getItem("/" + this.id + "/size");
@@ -1009,64 +378,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 path: '/'
             });
         },
-        pauseBtnIcon: null,
-        isPausedByPlanner: false, // keeps track of whether we've been told to pause sending by the planner buffer
-        onPlannerPause: function () {
-            console.log("xyz-onPlannerPause. being asked to pause.");
-            if (this.pauseBtnIcon === null) this.pauseBtnIcon = $('#com-chilipeppr-widget-robot-axes div.plannerpause');
-
-            if (!this.isPausedByPlanner) {
-                // we are not paused, so go ahead and pause
-                //this.onPauseByPlanner();
-                this.isPausedByPlanner = true;
-                // visuall indicate we were paused by planner, not by a human
-                this.pauseBtnIcon.addClass('btnIconWarning');
-            } else {
-                console.log("got planner pause, but we're already paused");
-            }
-        },
-        onPlannerResume: function () {
-            console.log("xyz-onPlannerResume. being asked to resume.");
-            if (this.pauseBtnIcon === null) this.pauseBtnIcon = $('#com-chilipeppr-widget-robot-axes div.plannerpause');
-
-            if (this.isPausedByPlanner) {
-                // we are currently paused, so unpause 
-                //this.onPauseByPlanner();
-                this.isPausedByPlanner = false;
-                this.pauseBtnIcon.removeClass('btnIconWarning');
-            } else {
-                console.log("got planner resume, but we're already resumed which is weird.");
-            }
-        },
-        /*
-        onRecvCmd: function (recvline) {
-            // get a per line command from the serial port server via pubsub
-            //console.log("onRecvCmd. recvline:", recvline);
-            // we want to process the status reports
-            // sample: 
-            // {"sr":{"vel":0.02,"mpoy":10.474,"dist":1,"stat":5}}
-            // {"sr":{"vel":0.06,"mpox":0.001,"dist":0}}
-            
-            if (!(recvline.dataline)) {
-                console.log("got recvline but it's not a dataline, so returning.");
-                return;
-            }
-            var msg = recvline.dataline;
-            if (msg.match(/^{/)) {
-                // it is json
-                d = $.parseJSON(msg);
-                //console.log("d:", d);
-                if (d.sr) {
-                    //console.log("it is a status report");
-                    this.updateAxesFromStatus(d.sr);
-                } else if (d.r && d.r.sr) {
-                    //console.log("it is a status report from a direct request");
-                    this.updateAxesFromStatus(d.r.sr);
-                }
-            }
-
-        },
-        */
+        
         toggleInMm: function () {
             var gCode;
 
