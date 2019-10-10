@@ -51,11 +51,12 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             this.setupOnRecvFromDeviceName();
 
             // setup DOM names for the Axes in the UI
-            this.setupAxes();
+            // this.setupAxes();
 
             // setup cookie based UI settings
             this.setupUiFromCookie();
 
+            // grab template for axis and make 6 versions
             this.createDomAxes();
 
             console.log(this.name + " done loading.");
@@ -64,6 +65,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
          * Method for sending to Cayenn device
          */
         send: function(name, obj) {
+            console.log("sending to actuator name:", name, "obj:", obj);
             chilipeppr.publish("/com-chilipeppr-widget-cayenn/sendToDeviceNameViaTcp", name, obj ) 
         },
         /**
@@ -98,6 +100,9 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     if ("Step" in payload.Tag.Stat ) {
                         // update axes val
                         // this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+
+                        // store the step position as a data attribute for later retrieval
+                        el.find(".widget-robot-axes-pos").attr("data-step", val);
                     
                         // do neg/positive
                         if (val < 0) {
@@ -136,6 +141,9 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             console.log("got setAxesStepVal. val:", val, "name:", name);
             var el = $("#com-chilipeppr-widget-robot-axes-" + name);
             
+            // store the step position as a data attribute for later retrieval
+            el.find(".widget-robot-axes-pos").attr("data-step", val);
+
             // do neg/positive
             if (val < 0) {
                 el.find(".xyz-negpos").removeClass("xyz-dimmed");
@@ -168,6 +176,16 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 const name = arr[index];
                 
                 var clone = elTmplt.clone();
+
+                // pencil hover
+                // clone.hover(this.pencilOnMouseover.bind(this), this.pencilOnMouseout.bind(this));
+                var posEl = clone.find(".widget-robot-axes-pos");
+                posEl.attr("data-id", name);
+                posEl.attr("data-step", 19);
+                posEl.click(this.onPerAxisPosClick.bind(this));
+                clone.mouseleave(this.onPerAxisPosBlur.bind(this));
+                posEl.find(".xyz-number").data("id", name).keyup(this.perAxisPosInputKeypress.bind(this));
+
                 clone.attr("id", "com-chilipeppr-widget-robot-axes-" + name);
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + name + ".jpg')");
                 clone.find('.axis-name').text(arrName[index]);
@@ -176,24 +194,61 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 // attach events
                 var btnJogFwd = clone.find(".jog-fwd");
                 btnJogFwd.on("click", this.onJogFwdClick.bind(this));
-                btnJogFwd.data("id", name);
+                btnJogFwd.attr("data-id", name);
                 var btnJogRev = clone.find(".jog-rev");
                 btnJogRev.on("click", this.onJogRevClick.bind(this));
-                btnJogRev.data("id", name);
+                btnJogRev.attr("data-id", name);
 
                 // go to zero, zeroout, home menu
                 clone.find(".widget-robot-axes-menu .xyz-goto-zero")
-                    .data("id", name)
+                    .attr("data-id", name)
                     .click(this.onPerAxisGotoZero.bind(this));
                 clone.find(".widget-robot-axes-menu .xyz-zeroout")
-                    .data("id", name)
+                    .attr("data-id", name)
                     .click(this.onPerAxisZeroOut.bind(this));
                 clone.find(".widget-robot-axes-menu .xyz-home")
-                    .data("id", name)
+                    .attr("data-id", name)
                     .click(this.onPerAxisHome.bind(this));
+
             }
             
             elTmplt.addClass("hidden");
+        },
+        perAxisPosInputKeypress: function(evt) {
+            console.log("Got perAxisPosInputKeypress. evt:", evt);
+            var el = $(evt.currentTarget);
+            var name = el.data("id");
+            // see if return key
+            if (evt.keyCode == 13) {
+                console.log("enter key hit");
+                
+                // send gcode
+                var obj = {
+                    Step: el.val()
+                }
+                this.send(name, obj);
+                
+                el.parent().addClass("hidden");
+            } else if (evt.keyCode == 27) {
+                console.log("ESC key hit");
+                el.parent().addClass("hidden");
+            }
+        },
+        onPerAxisPosClick: function(evt) {
+            console.log("Got onPerAxisPosClick. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            var step = el.data("step")
+            console.log("id:", id);
+            el.find(".xyz-stepentry").removeClass("hidden");
+            el.find(".xyz-number").val(step).focus().select();
+        },
+        onPerAxisPosBlur: function(evt) {
+            console.log("Got onPerAxisPosBlur. evt:", evt);
+            var el = $(evt.currentTarget);
+            // var id = el.data("id");
+            // console.log("id:", id);
+            el.find(".xyz-stepentry").addClass("hidden");
         },
         onPerAxisGotoZero: function(evt) {
             console.log("Got onPerAxisGotoZero. evt:", evt);
@@ -237,11 +292,21 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 // button is already pressed, unpress it
                 el.removeClass("active");
                 // stop the jog
+                var obj = {
+                    Cmd: "JogStop",
+                }
+                this.send(id, obj);
 
             } else {
                 // button is not pressed
                 el.addClass("active");
                 // start the jog
+                var val = this.baseval * 1000; // 1 is 0.001
+                var obj = {
+                    Cmd: "JogStart",
+                    Freq: val,
+                }
+                this.send(id, obj);
             }
         },
         onJogRevClick: function(evt) {
@@ -255,11 +320,21 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 // button is already pressed, unpress it
                 el.removeClass("active");
                 // stop the jog
-
+                var obj = {
+                    Cmd: "JogStop",
+                }
+                this.send(id, obj);
             } else {
                 // button is not pressed
                 el.addClass("active");
                 // start the jog
+                var val = this.baseval * -1000; // 1 is 0.001
+                var obj = {
+                    Cmd: "JogStart",
+                    Freq: val,
+                }
+                this.send(id, obj);
+
             }
         },
         titleCase: function(str) {
@@ -449,219 +524,6 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 this.lastCoords = coords;
             }
         },
-
-        axisx: null,
-        axisy: null,
-        axisz: null,
-        axisa: null,
-        axes: {},
-        //Machine coord version of axes. 
-        axismx: null,
-        axismy: null,
-        axismz: null,
-        axisma: null,
-        setupAxes: function () {
-            this.axisx = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-x .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-x .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-x .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-x .xyz-decimal')
-            };
-            this.axisy = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-y .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-y .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-y .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-y .xyz-decimal')
-            };
-            this.axisz = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-z .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-z .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-z .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-z .xyz-decimal')
-            };
-            this.axisa = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-a .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-a .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-a .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-a .xyz-decimal')
-            };
-            this.axismx = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-mx .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-mx .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-mx .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-mx .xyz-decimal')
-            };
-            this.axismy = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-my .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-my .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-my .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-my .xyz-decimal')
-            };
-            this.axismz = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-mz .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-mz .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-mz .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-mz .xyz-decimal')
-            };
-            this.axisma = {
-                intblack: $('#com-chilipeppr-widget-robot-axes-ma .xyz-intblack'),
-                intgray: $('#com-chilipeppr-widget-robot-axes-ma .xyz-intgray'),
-                negpos: $('#com-chilipeppr-widget-robot-axes-ma .xyz-negpos'),
-                decimal: $('#com-chilipeppr-widget-robot-axes-ma .xyz-decimal')
-            };
-            this.axes = {
-                x: this.axisx,
-                y: this.axisy,
-                z: this.axisz,
-                a: this.axisa,
-                mx: this.axismx,
-                my: this.axismy,
-                mz: this.axismz,
-                ma: this.axisma
-            };
-        },
-        updateAxesFromStatus: function (axes) {
-            console.log("updateAxesFromStatus:", axes);
-            if ('x' in axes && axes.x !== null) {
-                this.updateAxis("x", axes.x);
-            }
-            if ('y' in axes && axes.y !== null) {
-                this.updateAxis("y", axes.y);
-            }
-            if ('z' in axes && axes.z !== null) {
-                this.updateAxis("z", axes.z);
-            }
-            if ('a' in axes && axes.a !== null) {
-                this.updateAxis("a", axes.a);
-            }
-            if ('mpo' in axes) {
-                axes = axes.mpo;
-                var scale = 0;
-                if (this.currentUnits == 'mm') scale = 1;
-                if (this.currentUnits == 'inch') scale = 1 / 25.4;
-                if ('x' in axes && axes.x !== null) {
-                    this.updateAxis("mx", this.round(axes.x * scale, 4));
-                }
-                if ('y' in axes && axes.y !== null) {
-                    this.updateAxis("my", this.round(axes.y * scale, 4));
-                }
-                if ('z' in axes && axes.z !== null) {
-                    this.updateAxis("mz", this.round(axes.z * scale, 4));
-                }
-                if ('a' in axes && axes.a !== null) {
-                    this.updateAxis("ma", this.round(axes.a * scale, 4));
-                }
-            }
-        },
-
-        // keep track of lastval so less dom updates to perform
-        lastVal: {
-            x: 0,
-            y: 0,
-            z: 0,
-            a: 0,
-            mx: 0,
-            my: 0,
-            mz: 0,
-            ma: 0
-        },
-        updateAxis: function (axis, val) {
-            console.log("updateAxis. axis:", axis, "val:", val);
-            var ax = this.axes[axis];
-            var axl = this.lastVal[axis];
-
-            // if this val is same as last val, return immediately
-            // this happens alot as the cnc controller could send lots of redundant position updates
-            if (val == axl) {
-                //console.log("new val:", val, "is same as last val:", axl, "axis:", axis, "exiting");
-                return;
-            }
-            if (ax.intblack !== null) { //Temporary, until we actually have html for machine axis
-                // set the negative indicator, but only do it if there was a change
-                // to reduce dom updates for efficiency
-                if (val < 0 && axl >= 0) {
-                    ax.negpos.removeClass("xyz-dimmed");
-                    ax.negpos.addClass("xyz-active");
-                } else if (val >= 0 && axl < 0) {
-                    ax.negpos.removeClass("xyz-active");
-                    ax.negpos.addClass("xyz-dimmed");
-                }
-
-                // convert float into integer part and decimal part
-                var arr = (Math.abs(val) + "").split(".");
-                var intval = arr[0];
-                //console.log("arr.length:", arr.length, arr);
-                //var decval;
-                //if (arr.length > 0) decval = arr[1];
-                //else decval = "000";
-                var decval = ((arr.length > 1) ? arr[1] : "000");
-                decval += decval.length == 1 ? "00" : decval.length == 2 ? "0" : "";
-                //console.log("abs intval:", intval, "decval:", decval);
-
-                // set the integer part into dom
-                ax.intblack.html(intval);
-
-                // see about what dimmed out 0 padding we need
-                // use lastval to see if any delta so we have less dom updates to perform since they're slow
-                var axla = Math.abs(axl);
-                //console.log("abs last val:", axla);
-                if (intval >= 100 && axla < 100) ax.intgray.html("");
-                else if (intval < 100 && intval >= 10 && (axla < 10 || axla >= 100)) ax.intgray.html("0");
-                else if (intval === 0 && axla > 0) ax.intgray.html("00");
-
-                ax.decimal.html(decval);
-            }
-            // set lastVal so we have it next time into this method
-            this.lastVal[axis] = val;
-        },
-        menuSetup: function () {
-            $('#com-chilipeppr-widget-robot-axes .xyz-showa').click(this.showHideAxisA.bind(this));
-            $('#com-chilipeppr-widget-robot-axes .showhideaaxis').click(this.showHideAxisA.bind(this));
-            $('#com-chilipeppr-widget-robot-axes .showhidemDRO').click(this.showHidemDRO.bind(this));
-
-            // Setup zeroing G92 - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(0).click("x", this.zeroOutAxisG92.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(0).click("y", this.zeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(0).click("z", this.zeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(0).click("a", this.zeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-
-            // Setup unzeroing G92 - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(1).click("x", this.unzeroOutAxisG92.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(1).click("y", this.unzeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(1).click("z", this.unzeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(1).click("a", this.unzeroOutAxisG92.bind(this)).prop('href', 'javascript:');;
-
-            // Setup goto Work zero - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(2).click("x", this.gotoZero.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(2).click("y", this.gotoZero.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(2).click("z", this.gotoZero.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(2).click("a", this.gotoZero.bind(this)).prop('href', 'javascript:');
-
-            // Setup zeroing G10 (work) - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(3).click("mx", this.zeroOutAxisG10.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(3).click("my", this.zeroOutAxisG10.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(3).click("mz", this.zeroOutAxisG10.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(3).click("ma", this.zeroOutAxisG10.bind(this)).prop('href', 'javascript:');;
-
-            // Setup goto Machine zero - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(4).click("x", this.gotoZeroM.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(4).click("y", this.gotoZeroM.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(4).click("z", this.gotoZeroM.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(4).click("a", this.gotoZeroM.bind(this)).prop('href', 'javascript:');
-
-            // Setup homing with no limit switches - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(5).click("x", this.zeroOutAxisG28.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(5).click("y", this.zeroOutAxisG28.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(5).click("z", this.zeroOutAxisG28.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(5).click("a", this.zeroOutAxisG28.bind(this)).prop('href', 'javascript:');;
-
-            // Setup homing with limit switches - per axis menu
-            $('#com-chilipeppr-widget-robot-axes-x .dropdown-menu a').eq(6).click("x", this.homeAxis.bind(this)).prop('href', 'javascript:');
-            $('#com-chilipeppr-widget-robot-axes-y .dropdown-menu a').eq(6).click("y", this.homeAxis.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-z .dropdown-menu a').eq(6).click("z", this.homeAxis.bind(this)).prop('href', 'javascript:');;
-            $('#com-chilipeppr-widget-robot-axes-a .dropdown-menu a').eq(6).click("a", this.homeAxis.bind(this)).prop('href', 'javascript:');;
-
-        },
         publishSend: function(gcode) {
             var jsonSend = {
                 D: gcode,
@@ -781,38 +643,6 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             //chilipeppr.publish("/com-chilipeppr-widget-serialport/send", cmd);
             this.publishSend(cmd);
 
-        },
-        isAAxisShowing: false,
-        showHideAxisA: function () {
-            var el = $('#com-chilipeppr-widget-robot-axes-a');
-            if (el.hasClass('hidden')) {
-                this.isAAxisShowing = true;
-                el.removeClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes .showhideaaxis').addClass("active");
-            } else {
-                this.isAAxisShowing = false;
-                el.addClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes .showhideaaxis').removeClass("active");
-            }
-            $(window).trigger('resize');
-        },
-        ismDROShowing: false,
-        showHidemDRO: function () {
-            var el = $('#com-chilipeppr-widget-robot-axes-mx');
-            if ($('#com-chilipeppr-widget-robot-axes-mx').hasClass('hidden')) {
-                this.ismDROShowing = true;
-                $('#com-chilipeppr-widget-robot-axes-mx').removeClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes-my').removeClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes-mz').removeClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes .showhidemDRO').addClass("active");
-            } else {
-                this.ismDROShowing = false;
-                $('#com-chilipeppr-widget-robot-axes-mx').addClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes-my').addClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes-mz').addClass('hidden');
-                $('#com-chilipeppr-widget-robot-axes .showhidemDRO').removeClass("active");
-            }
-            $(window).trigger('resize');
         },
         btnSetup: function () {
             // setup planner indicator icon

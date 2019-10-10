@@ -106,13 +106,13 @@
                                 <li role="presentation" class="divider"></li> -->
                                 <!-- <li role="presentation" class="dropdown-header">1st layer coordinates: G53
                                     <br/>Absolute physical machine coordinates</li> -->
-                                <li class="xyz-goto-zero"><a xhref="">Go To Zero On <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Gcode","Step":0})</span></a>
+                                <li class="xyz-goto-zero" style="cursor:pointer;"><a xhref="">Go To Zero On <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Gcode","Step":0})</span></a>
 
                                 </li>
-                                <li class="xyz-zeroout"><a xhref="">Zero Out <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"ZeroOut"}</span></a>
+                                <li class="xyz-zeroout" style="cursor:pointer;"><a xhref="">Zero Out <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"ZeroOut"}</span></a>
 
                                 </li>
-                                <li class="xyz-home"><a xhref=""><span class="glyphicon glyphicon-home"></span> Home <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Home"}</span> <span class="xyz-limitswitch">Hall sensor required</span></a>
+                                <li class="xyz-home" style="cursor:pointer;"><a xhref=""><span class="glyphicon glyphicon-home"></span> Home <span class="axis-name">(Axis Name)</span> <span class="axis-cmd">{"Cmd":"Home"}</span> <span class="xyz-limitswitch">Hall sensor required</span></a>
 
                                 </li>
                             </ul>
@@ -130,11 +130,12 @@
                     </div> -->
                     <!-- Value -->
                     <div class="col col-xs-6">
-                        <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" data-axis="x">
+                        <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" >
                             <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
                             <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
                             <h2 class="widget-robot-axes-pos">    
                                 <span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">0000</span><span class="xyz-intblack">0</span></td>
+                                <div class="xyz-stepentry hidden" style="position:absolute;top:8px;left:-24px;width:220px;"><input type="number" class="form-control xyz-number" placeholder="Enter New Coord"></div>
                             </h2>
 
                             <div class="widget-robot-axes-dim">
