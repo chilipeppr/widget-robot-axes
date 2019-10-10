@@ -1,5 +1,5 @@
 /* global cprequire_test macro chilipeppr THREE $ requirejs cprequire cpdefine chilipeppr */
-// Test this element. This code is auto-removed by the chilipeppr.load()
+// Test this name. This code is auto-removed by the chilipeppr.load()
 cprequire_test(["inline:com-chilipeppr-widget-robot-axes"], function (xyz) {
     console.log("test running of " + xyz.id);
     //sp.init("192.168.1.7");
@@ -50,7 +50,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             // setup subscribe so we get axes info for Cayenn device
             this.setupOnRecvFromDeviceName();
 
-            // setup DOM elements for the Axes in the UI
+            // setup DOM names for the Axes in the UI
             this.setupAxes();
 
             // setup cookie based UI settings
@@ -158,31 +158,73 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         // since we have 6 and more for grippers
         createDomAxes: function() {
             var elTmplt = $('#com-chilipeppr-widget-robot-axes-tmplt');
-            var arr = ['Base', 'Upperarm', 'Forearm', 'Wrist1', 'Wrist2', 'Wrist3'];
+            var arr = ['Base', 'UpperArm', 'Forearm', 'Wrist1', 'Wrist2', 'Wrist3'];
             var arrName = ['Base', 'Upper Arm', 'Forearm', 'Wrist 1', 'Wrist 2', 'Wrist 3'];
             var that = this;
             var prefix = "";
             prefix = "https://raw.githubusercontent.com/chilipeppr/widget-robot-axes/master/";
 
             for (let index = 0; index < arr.length; index++) {
-                const element = arr[index];
+                const name = arr[index];
                 
                 var clone = elTmplt.clone();
-                clone.attr("id", "com-chilipeppr-widget-robot-axes-" + element);
-                clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + element + ".jpg')");
+                clone.attr("id", "com-chilipeppr-widget-robot-axes-" + name);
+                clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + name + ".jpg')");
                 clone.find('.axis-name').text(arrName[index]);
                 elTmplt.parent().append(clone);
 
                 // attach events
                 var btnJogFwd = clone.find(".jog-fwd");
                 btnJogFwd.on("click", this.onJogFwdClick.bind(this));
-                btnJogFwd.data("id", element);
+                btnJogFwd.data("id", name);
                 var btnJogRev = clone.find(".jog-rev");
                 btnJogRev.on("click", this.onJogRevClick.bind(this));
-                btnJogRev.data("id", element);
+                btnJogRev.data("id", name);
+
+                // go to zero, zeroout, home menu
+                clone.find(".widget-robot-axes-menu .xyz-goto-zero")
+                    .data("id", name)
+                    .click(this.onPerAxisGotoZero.bind(this));
+                clone.find(".widget-robot-axes-menu .xyz-zeroout")
+                    .data("id", name)
+                    .click(this.onPerAxisZeroOut.bind(this));
+                clone.find(".widget-robot-axes-menu .xyz-home")
+                    .data("id", name)
+                    .click(this.onPerAxisHome.bind(this));
             }
             
             elTmplt.addClass("hidden");
+        },
+        onPerAxisGotoZero: function(evt) {
+            console.log("Got onPerAxisGotoZero. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+            var obj = {
+                Cmd: "Gcode",
+                Step: 0,
+            }
+            this.send(id, obj);
+        },
+        onPerAxisZeroOut: function(evt) {
+            console.log("Got onPerAxisZeroOut. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+            var obj = {
+                Cmd: "ZeroOut",
+            }
+            this.send(id, obj);
+        },
+        onPerAxisHome: function(evt) {
+            console.log("Got onPerAxisHome. evt:", evt);
+            var el = $(evt.currentTarget);
+            var id = el.data("id");
+            console.log("id:", id);
+            var obj = {
+                Cmd: "Home",
+            }
+            this.send(id, obj);
         },
         onJogFwdClick: function(evt) {
             console.log("Got onJogFwdClick. evt:", evt);
@@ -1292,7 +1334,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 animation: true
             });
 
-            // load the pubsub viewer / fork element which decorates our upper right pulldown
+            // load the pubsub viewer / fork name which decorates our upper right pulldown
             // menu with the ability to see the pubsubs from this widget and the forking links
             var that = this;
 
