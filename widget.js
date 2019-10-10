@@ -2,6 +2,52 @@
 // Test this name. This code is auto-removed by the chilipeppr.load()
 cprequire_test(["inline:com-chilipeppr-widget-robot-axes"], function (xyz) {
     console.log("test running of " + xyz.id);
+
+    var testLoadSPJS = function () {
+		// Inject new div to contain widget or use an existing div with an ID
+		$("body").append('<' + 'div id="myDivWidgetSerialport"><' + '/div>');
+
+		chilipeppr.load(
+			"#myDivWidgetSerialport",
+			"http://raw.githubusercontent.com/chilipeppr/widget-spjs/master/auto-generated-widget.html",
+			function () {
+				// Callback after widget loaded into #myDivWidgetSerialport
+				// Now use require.js to get reference to instantiated widget
+				cprequire(
+					["inline:com-chilipeppr-widget-serialport"], // the id you gave your widget
+					function (myObjWidgetSerialport) {
+						// Callback that is passed reference to the newly loaded widget
+						console.log("Widget / Serial Port JSON Server just got loaded.", myObjWidgetSerialport);
+						myObjWidgetSerialport.init();
+						myObjWidgetSerialport.consoleToggle();
+					}
+				);
+			}
+		);
+	}
+	testLoadSPJS();
+
+	// Inject new div to contain widget or use an existing div with an ID
+	$("body").append('<' + 'div id="myDivWidgetCayenn"><' + '/div>');
+
+	chilipeppr.load(
+		"#myDivWidgetCayenn",
+		"https://raw.githubusercontent.com/chilipeppr/widget-cayenn/master/auto-generated-widget.html",
+		// "http://localhost:9002/auto-generated-widget.html",
+		function () {
+			// Callback after widget loaded into #myDivWidgetCayenn
+			// Now use require.js to get reference to instantiated widget
+			cprequire(
+				["inline:com-chilipeppr-widget-cayenn"], // the id you gave your widget
+				function (myObjWidgetCayenn) {
+					// Callback that is passed reference to the newly loaded widget
+					console.log("Widget / Cayenn just got loaded.", myObjWidgetCayenn);
+					myObjWidgetCayenn.init();
+				}
+			);
+		}
+    );
+    
     //sp.init("192.168.1.7");
     //xyz.initAs3dPrinting();
     xyz.init();
@@ -82,24 +128,36 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
 
             // data looks like
             /*
-            Addr: {IP: "10.0.0.175", Port: 60623, Network: "tcp", TcpOrUdp: "tcp"}
+            Addr: {IP: "10.0.0.109", Port: 52276, Network: "tcp", TcpOrUdp: "tcp"}
             Announce: ""
-            DeviceId: "chip:0xa330aea4d6e7-ip:10.0.0.175"
-            JsonTag: "{"TransId":1,"Stat":{"Step":0,"Temp":-45.6,"Freq":10,"Motor":{"CSACTUAL":0,"fsactive":0,"olb":1,"stallGuard":0,"ola":1,"ot":0,"stst":1,"s2gb":0,"s2ga":0,"otpw":0,"SG_RESULT":0},"FanSpeed":0},"Resp":"StatusGet"}"
-            Name: "Wrist3"
-            Tag: {TransId: 1, Stat: {…}, Resp: "StatusGet"}
+            DeviceId: "chip:0xf0807d3ac5d1-ip:10.0.0.109"
+            JsonTag: "{"Stat":{"Fan":0,"Temp":24.1,"StepRmt":6440,"Step":6440}}"
+            Name: "Wrist2"
+            Tag:
+                Stat:
+                    Fan: 0
+                    Step: 6440
+                    StepRmt: 6440
+                    Temp: 24.1
+            __proto__: Object
+            __proto__: Object
             Widget: ""
             */
             
             if (payload && payload.Name && payload.Name.length > 0) {
 
-                if (payload.Tag && "Stat" in payload.Tag) {
+                var name = payload.Name;
+                console.log("actuator name:", name);
+
+                if ("Tag" in payload && "Stat" in payload.Tag) {
+                    // debugger;
 
                     var el = $("#com-chilipeppr-widget-robot-axes-" + name);
 
                     if ("Step" in payload.Tag.Stat ) {
                         // update axes val
                         // this.setAxesStepVal(payload.Name, payload.Tag.Stat.Step);
+                        var val = payload.Tag.Stat.Step;
 
                         // store the step position as a data attribute for later retrieval
                         el.find(".widget-robot-axes-pos").attr("data-step", val);
@@ -122,7 +180,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                         // update main number
                         el.find(".xyz-intblack").text(str);
                     }
-                    if ("StepPcnt" in payload.Tag.Stat) {
+                    if ("StepRmt" in payload.Tag.Stat) {
                         el.find(".xyz-pulsecnt").text(payload.Tag.Stat.StepRmt);
                     }
                     if ("Fan" in payload.Tag.Stat) {
@@ -132,6 +190,8 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                         el.find(".xyz-temp-c").text(payload.Tag.Stat.Temp);
                     }
                 }
+            } else {
+                console.error("No name in payload");
             }
         },
         /**
@@ -181,10 +241,13 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 // clone.hover(this.pencilOnMouseover.bind(this), this.pencilOnMouseout.bind(this));
                 var posEl = clone.find(".widget-robot-axes-pos");
                 posEl.attr("data-id", name);
-                posEl.attr("data-step", 19);
+                posEl.attr("data-step", 0);
                 posEl.click(this.onPerAxisPosClick.bind(this));
                 clone.mouseleave(this.onPerAxisPosBlur.bind(this));
-                posEl.find(".xyz-number").data("id", name).keyup(this.perAxisPosInputKeypress.bind(this));
+                posEl.find(".xyz-number")
+                    .attr("data-id", name)
+                    .keyup(this.perAxisPosInputKeypress.bind(this))
+                    .blur(this.onPerAxisPosBlur.bind(this));
 
                 clone.attr("id", "com-chilipeppr-widget-robot-axes-" + name);
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + name + ".jpg')");
@@ -217,13 +280,14 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         perAxisPosInputKeypress: function(evt) {
             console.log("Got perAxisPosInputKeypress. evt:", evt);
             var el = $(evt.currentTarget);
-            var name = el.data("id");
+            var name = el.attr("data-id");
             // see if return key
             if (evt.keyCode == 13) {
                 console.log("enter key hit");
                 
                 // send gcode
                 var obj = {
+                    Cmd: "Gcode",
                     Step: el.val()
                 }
                 this.send(name, obj);
@@ -237,8 +301,8 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onPerAxisPosClick: function(evt) {
             console.log("Got onPerAxisPosClick. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
-            var step = el.data("step")
+            var id = el.attr("data-id");
+            var step = el.attr("data-step")
             console.log("id:", id);
             el.find(".xyz-stepentry").removeClass("hidden");
             el.find(".xyz-number").val(step).focus().select();
@@ -253,7 +317,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onPerAxisGotoZero: function(evt) {
             console.log("Got onPerAxisGotoZero. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
+            var id = el.attr("data-id");
             console.log("id:", id);
             var obj = {
                 Cmd: "Gcode",
@@ -264,7 +328,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onPerAxisZeroOut: function(evt) {
             console.log("Got onPerAxisZeroOut. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
+            var id = el.attr("data-id");
             console.log("id:", id);
             var obj = {
                 Cmd: "ZeroOut",
@@ -274,7 +338,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onPerAxisHome: function(evt) {
             console.log("Got onPerAxisHome. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
+            var id = el.attr("data-id");
             console.log("id:", id);
             var obj = {
                 Cmd: "Home",
@@ -284,7 +348,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onJogFwdClick: function(evt) {
             console.log("Got onJogFwdClick. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
+            var id = el.attr("data-id");
             console.log("id:", id);
 
             // see if pressed already or not
@@ -312,7 +376,7 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         onJogRevClick: function(evt) {
             console.log("Got onJogRevClick. evt:", evt);
             var el = $(evt.currentTarget);
-            var id = el.data("id");
+            var id = el.attr("data-id");
             console.log("id:", id);
 
             // see if pressed already or not
