@@ -78,7 +78,7 @@
         <div id="com-chilipeppr-widget-robot-axes-body" class="panel-body">
             <div class="container-fluid">
                 <!-- Axis Template Row -->
-                <div id="com-chilipeppr-widget-robot-axes-tmplt" class="row">
+                <div id="com-chilipeppr-widget-robot-axes-tmplt" xtabindex="0" style="position: relative;" class="row">
                     <!-- Label -->
                     <div class="col col-xs-4" style="position:relative;">
                         <div class="btn-group widget-robot-axes-menu">
@@ -130,56 +130,78 @@
                     </div> -->
                     <!-- Value -->
                     <div class="col col-xs-6">
-                        <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" >
-                            <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
-                            <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
-                            <h2 class="widget-robot-axes-pos">    
-                                <span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">0000</span><span class="xyz-intblack">0</span></td>
-                                <div class="xyz-stepentry hidden" style="position:absolute;top:8px;left:-24px;width:220px;"><input type="number" class="form-control xyz-number" placeholder="Enter New Coord"></div>
-                            </h2>
-
-                            <div class="widget-robot-axes-dim">
-                                Steps <span class="xyz-pulsecnt" style="color: #bbbbbb;">0</span>
-                                
-                            </div>
-                            <div class="xyz-fan-temp" style="opacity: 0.5; position: absolute;bottom:4px;right:8px;text-align: right;">
-                                <div>
-                                    <span class="xyz-fan-pct">-</span>%
-                                    <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14">
-                                        <g transform="translate(-21.208957,-225.67417)" id="layer1">
-                                            <g transform="matrix(0.03633062,0,0,0.03633062,20.562243,223.56811)" id="g4560">
-                                                <path
-                                                    style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                                                    d="M 413.27734,223.11133 C 326.52129,222.6501 294.0983,295.1146 298.31055,331.44531 c 0.54776,27.38669 -4.84565,51.54787 44.0625,135.41797 a 98.425293,97.410595 0 0 0 -32.14649,33.83594 c -21.122,-4.60596 -46.73045,-23.3315 -64.88476,-40.57813 -22.09701,-20.99217 -40.32684,-52.48058 -80.10157,-49.16601 -39.77477,3.31453 -75.682358,10.49715 -83.968746,107.17187 -8.286425,96.67476 69.605176,132.58151 107.722656,128.16211 26.5474,-0.53098 50.06493,4.52342 127.87305,-39.71289 a 98.425293,97.410595 0 0 0 33.74219,28.46875 c 1.84966,22.60883 -20.89817,54.99391 -41.53126,76.71289 -20.99217,22.09705 -52.48058,40.32684 -49.16601,80.10157 3.31453,39.77472 10.4952,75.68431 107.16992,83.9707 96.67475,8.28642 132.58347,-69.60713 128.16406,-107.72461 -0.55245,-27.62136 4.97011,-51.92851 -45.30078,-137.55469 0,0 -0.55814,-0.15291 -0.61914,-0.16992 a 98.425293,97.410595 0 0 0 30.68164,-31.48047 c 21.82579,2.85891 49.64168,22.93123 68.98828,41.31055 22.09705,20.99221 40.32684,52.48058 80.10157,49.16601 39.77476,-3.31453 75.68236,-10.49711 83.96875,-107.17187 8.28642,-96.67476 -69.60518,-132.58151 -107.72266,-128.16211 -26.58146,0.53163 -50.1244,-4.53887 -128.17187,39.88086 a 98.425293,97.410595 0 0 0 -34.31641,-30.8711 c -0.79877,-22.52624 21.42824,-54.00204 41.62305,-75.25976 20.99225,-22.09707 52.48058,-40.32876 49.16601,-80.10352 C 530.33,267.9147 523.14937,232.00711 426.47461,223.7207 c -4.53162,-0.38842 -8.93056,-0.58669 -13.19727,-0.60937 z m -17.5625,243.09765 a 82.392927,82.392927 0 0 1 82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39257,-82.39258 82.392927,82.392927 0 0 1 82.39257,-82.39258 z"
-                                                    transform="scale(0.26458333)" id="path4541" />
-                                                <circle id="path3728" cx="104.17062" cy="145.15083" r="10.691406"
-                                                    style="fill:#000000;fill-opacity:1;stroke-width:0.2082229" />
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span class="xyz-temp-c">-</span>&deg;C
-                                    <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14" style="padding-top:2px;">
-                                        <g transform="translate(-21.208957,-225.67417)" id="layer1">
-                                            <g style="fill:#000000;fill-opacity:1" transform="matrix(1.0828776,0,0,1.0231684,-5.0447341,-5.2675529)"
-                                                id="g4592">
-                                                <path id="path4573" transform="matrix(0.26458333,0,0,0.26458333,21.208957,225.67417)"
-                                                    d="M 22.470703,0.26367188 A 2.7337369,2.7337369 0 0 0 19.746094,2.796875 h -0.02734 v 13.347656 a 4.2672968,4.2672968 0 0 0 -1.515625,3.253907 4.2672968,4.2672968 0 0 0 4.267578,4.267578 4.2672968,4.2672968 0 0 0 4.265625,-4.267578 4.2672968,4.2672968 0 0 0 -1.515625,-3.261719 V 2.796875 h -0.02344 A 2.7337369,2.7337369 0 0 0 22.470703,0.26367188 Z"
-                                                    style="fill:#000000;fill-opacity:1;stroke-width:0.99999994" />
-                                            </g>
-                                            <path id="rect4582"
-                                                d="m 24.34019,226.0113 a 0.40582926,0.31042373 0 0 0 -0.405967,0.31082 0.40582926,0.31042373 0 0 0 5.95e-4,0.009 h -0.02081 v 3.8902 a 0.85224146,0.79016954 0 0 0 -0.433905,0.68721 0.85224146,0.79016954 0 0 0 0.852354,0.79027 0.85224146,0.79016954 0 0 0 0.852353,-0.79027 0.85224146,0.79016954 0 0 0 -0.438659,-0.69051 v -3.8869 h -5.94e-4 a 0.40582926,0.31042373 0 0 0 5.94e-4,-0.009 0.40582926,0.31042373 0 0 0 -0.405968,-0.31082 z"
-                                                style="fill:#fffeff;fill-opacity:1;stroke-width:0.29303485" />
-                                            <path id="path4603"
-                                                d="m 24.313205,229.06864 a 0.1958699,0.18506976 0 0 0 -0.195858,0.18506 0.1958699,0.18506976 0 0 0 0.01399,0.0682 v 1.13202 a 0.53357666,0.50415558 0 0 0 -0.344708,0.47163 0.53357666,0.50415558 0 0 0 0.533851,0.50442 0.53357666,0.50415558 0 0 0 0.533291,-0.50442 0.53357666,0.50415558 0 0 0 -0.351424,-0.47322 v -1.15106 a 0.1958699,0.18506976 0 0 0 0.0067,-0.0476 0.1958699,0.18506976 0 0 0 -0.195857,-0.18506 z"
-                                                style="fill:#000000;fill-opacity:1;stroke-width:0.27850032" />
-                                        </g>
-                                    </svg>
-                                </div>
                             
+                        <div class="well widget-robot-axes-well widget-robot-axes-pos-well flatbottom" >
+
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col col-xs-8" style="position: relative;height: 70px;">
+
+                                        <!-- <button class="btn btn-xs btn-default xyz-pencil"><span class="glyphicon glyphicon-pencil"></span></button> -->
+                                        <!-- <input type="number" class="form-control xyz-number" placeholder="Enter New Coord"> -->
+                                        <h2 class="widget-robot-axes-pos">    
+                                            <span class="xyz-negpos xyz-dimmed" >-</span><span class="xyz-intgray xyz-dimmed">0000</span><span class="xyz-intblack">0</span></td>
+                                            <div class="xyz-stepentry hidden" style="position:absolute;top:8px;left:-24px;width:220px;"><input type="number" class="form-control xyz-number" placeholder="Enter New Coord"></div>
+                                        </h2>
+
+                                        <div class="widget-robot-axes-dim">
+                                            Steps <span class="xyz-pulsecnt" style="color: #bbbbbb;">0</span>
+                                            <div class="widget-robot-axes-state">
+                                                <span class="xyz-state" style="color: #bbbbbb;">-</span>
+                                            </div>
+                                        </div>
+                                        
+
+                                    </div>    
+                                <!-- </div>
+                                <div class="row"> -->
+                                    <div class="col col-xs-4">
+
+                                        <div class="xyz-fan-temp" style="padding-right:8px;padding-bottom:4px;opacity: 0.5; xposition: absolute;bottom:4px;right:8px;text-align: right;">
+                                            <div><span class="xyz-hertz">-</span> Hz</div>
+                                            <div>
+                                                <span class="xyz-fan-pct">-</span>%
+                                                <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14">
+                                                    <g transform="translate(-21.208957,-225.67417)" id="layer1">
+                                                        <g transform="matrix(0.03633062,0,0,0.03633062,20.562243,223.56811)" id="g4560">
+                                                            <path
+                                                                style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                                                                d="M 413.27734,223.11133 C 326.52129,222.6501 294.0983,295.1146 298.31055,331.44531 c 0.54776,27.38669 -4.84565,51.54787 44.0625,135.41797 a 98.425293,97.410595 0 0 0 -32.14649,33.83594 c -21.122,-4.60596 -46.73045,-23.3315 -64.88476,-40.57813 -22.09701,-20.99217 -40.32684,-52.48058 -80.10157,-49.16601 -39.77477,3.31453 -75.682358,10.49715 -83.968746,107.17187 -8.286425,96.67476 69.605176,132.58151 107.722656,128.16211 26.5474,-0.53098 50.06493,4.52342 127.87305,-39.71289 a 98.425293,97.410595 0 0 0 33.74219,28.46875 c 1.84966,22.60883 -20.89817,54.99391 -41.53126,76.71289 -20.99217,22.09705 -52.48058,40.32684 -49.16601,80.10157 3.31453,39.77472 10.4952,75.68431 107.16992,83.9707 96.67475,8.28642 132.58347,-69.60713 128.16406,-107.72461 -0.55245,-27.62136 4.97011,-51.92851 -45.30078,-137.55469 0,0 -0.55814,-0.15291 -0.61914,-0.16992 a 98.425293,97.410595 0 0 0 30.68164,-31.48047 c 21.82579,2.85891 49.64168,22.93123 68.98828,41.31055 22.09705,20.99221 40.32684,52.48058 80.10157,49.16601 39.77476,-3.31453 75.68236,-10.49711 83.96875,-107.17187 8.28642,-96.67476 -69.60518,-132.58151 -107.72266,-128.16211 -26.58146,0.53163 -50.1244,-4.53887 -128.17187,39.88086 a 98.425293,97.410595 0 0 0 -34.31641,-30.8711 c -0.79877,-22.52624 21.42824,-54.00204 41.62305,-75.25976 20.99225,-22.09707 52.48058,-40.32876 49.16601,-80.10352 C 530.33,267.9147 523.14937,232.00711 426.47461,223.7207 c -4.53162,-0.38842 -8.93056,-0.58669 -13.19727,-0.60937 z m -17.5625,243.09765 a 82.392927,82.392927 0 0 1 82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39454,82.39258 82.392927,82.392927 0 0 1 -82.39257,-82.39258 82.392927,82.392927 0 0 1 82.39257,-82.39258 z"
+                                                                transform="scale(0.26458333)" id="path4541" />
+                                                            <circle id="path3728" cx="104.17062" cy="145.15083" r="10.691406"
+                                                                style="fill:#000000;fill-opacity:1;stroke-width:0.2082229" />
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <span class="xyz-temp-c">-</span>&deg;C
+                                                <svg viewBox="0 0 6.3499999 6.3499998" height="14" width="14" style="padding-top:2px;">
+                                                    <g transform="translate(-21.208957,-225.67417)" id="layer1">
+                                                        <g style="fill:#000000;fill-opacity:1" transform="matrix(1.0828776,0,0,1.0231684,-5.0447341,-5.2675529)"
+                                                            id="g4592">
+                                                            <path id="path4573" transform="matrix(0.26458333,0,0,0.26458333,21.208957,225.67417)"
+                                                                d="M 22.470703,0.26367188 A 2.7337369,2.7337369 0 0 0 19.746094,2.796875 h -0.02734 v 13.347656 a 4.2672968,4.2672968 0 0 0 -1.515625,3.253907 4.2672968,4.2672968 0 0 0 4.267578,4.267578 4.2672968,4.2672968 0 0 0 4.265625,-4.267578 4.2672968,4.2672968 0 0 0 -1.515625,-3.261719 V 2.796875 h -0.02344 A 2.7337369,2.7337369 0 0 0 22.470703,0.26367188 Z"
+                                                                style="fill:#000000;fill-opacity:1;stroke-width:0.99999994" />
+                                                        </g>
+                                                        <path id="rect4582"
+                                                            d="m 24.34019,226.0113 a 0.40582926,0.31042373 0 0 0 -0.405967,0.31082 0.40582926,0.31042373 0 0 0 5.95e-4,0.009 h -0.02081 v 3.8902 a 0.85224146,0.79016954 0 0 0 -0.433905,0.68721 0.85224146,0.79016954 0 0 0 0.852354,0.79027 0.85224146,0.79016954 0 0 0 0.852353,-0.79027 0.85224146,0.79016954 0 0 0 -0.438659,-0.69051 v -3.8869 h -5.94e-4 a 0.40582926,0.31042373 0 0 0 5.94e-4,-0.009 0.40582926,0.31042373 0 0 0 -0.405968,-0.31082 z"
+                                                            style="fill:#fffeff;fill-opacity:1;stroke-width:0.29303485" />
+                                                        <path id="path4603"
+                                                            d="m 24.313205,229.06864 a 0.1958699,0.18506976 0 0 0 -0.195858,0.18506 0.1958699,0.18506976 0 0 0 0.01399,0.0682 v 1.13202 a 0.53357666,0.50415558 0 0 0 -0.344708,0.47163 0.53357666,0.50415558 0 0 0 0.533851,0.50442 0.53357666,0.50415558 0 0 0 0.533291,-0.50442 0.53357666,0.50415558 0 0 0 -0.351424,-0.47322 v -1.15106 a 0.1958699,0.18506976 0 0 0 0.0067,-0.0476 0.1958699,0.18506976 0 0 0 -0.195857,-0.18506 z"
+                                                            style="fill:#000000;fill-opacity:1;stroke-width:0.27850032" />
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        
+                                        </div>
+
+                                    </div>    
+                                </div>
                             </div>
                         </div>
+                    
+                        
                     </div>
                     <div class="col col-xs-2 btn-group-vertical per-axis-jog" style="">
                         <button class="btn btn-default jog-fwd"><span class="glyphicon glyphicon-circle-arrow-up"></span>
@@ -187,6 +209,7 @@
                         <button class="btn btn-default jog-rev "><span class="glyphicon glyphicon-circle-arrow-down"></span>
                         </button>
                     </div>
+                    <div class="xyz-glowbox hidden" style="z-index:1;position:absolute;top:0;bottom:0;left:0;right:0;box-shadow: 0px 0px 6px 6px #9ecaed;"></div>
                 </div>
                 
                 <!-- end -->
@@ -194,83 +217,32 @@
         </div>
         <div id="com-chilipeppr-widget-robot-axes-ftr" tabindex="1" class="panel-footer" style="padding:2px;padding-bottom:0px;">
             <div class="com-chilipeppr-widget-robot-axes-buttonarray hiddenx" style="border:0px solid green;">
-                <table style="border:0px solid red;">
+                <table style="border:0px solid red;width:100%;">
                     <tr valign="top">
-                        <td class="col xcol-xs-2" style="border:0px red solid;" rowspan="2">
+                        <td class="col xcol-xs-2" style="border:0px red solid;" xrowspan="2">
                             <div class="btn-group-vertical">
-                                <!-- <button class="btn btn-xs btn-default joggotozerow" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, current work coordinate" data-content="G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in current work coordinate system; individual moves available via axis drop down menus above."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body">Go To <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button> -->
-                                <!-- <button class="btn btn-xs btn-default jogzerooutw " id="jogzerooutw" data-toggle="popover" data-placement="top" data-title="Set Active Coordinate Zero Here" data-content="Sets active work coordinate system zero to current machine position." data-html="true"
-                                data-delay="800" data-trigger="hover" data-container="body">Set <span class="com-chilipeppr-widget-robot-axes-coords">Gxx</span> Zero</button> -->
-                                <button class="btn btn-xs btn-default joggotozerom" data-toggle="popover" data-placement="top" data-title="Rapid to Zero Position, all axes, absolute machine coordinate" data-content="G53 G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in absolute machine coordinate system; individual moves available via axis drop down menus above."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Go To Zero on All Axes</button>
-                                <button class="btn btn-xs btn-default jogzerooutm " data-toggle="popover" data-placement="top" data-title="Set Machine Zero on All Axes" data-content="G28.3 X0 Y0 Z0 A0<br/>Sets hardware zero (G53) to the current position.  Useful if machine does not have limit switches."
-                                data-html="true" data-delay="800" data-trigger="hover" data-container="body" style="background-color:#eef1ee">Zero Out All Axes</button>
-                                <button class="btn btn-xs btn-default joghomem " data-toggle="popover" data-placement="top" data-title="Homing Sequence" data-content="G28.2 X0 Y0 Z0 A0<br/>Runs homing cycle on all axes. MUST have home/limit switches" data-html="true" data-delay="200"
-                                data-trigger="hover" data-container="body" style="background-color:#eef1ee"><span class="glyphicon glyphicon-home"></span> Home All Axes</button>
+                
+                                <button class="btn btn-xs btn-default joggotozerom" data-toggle="popover" data-placement="top"
+                                    data-title="Rapid to Zero Position, all axes, absolute machine coordinate"
+                                    data-content="G53 G0 X0 Y0 Z0 A0<br/>This moves all axes to zero in absolute machine coordinate system; individual moves available via axis drop down menus above."
+                                    data-html="true" data-delay="800" data-trigger="hover" data-container="body"
+                                    style="background-color:#eef1ee">Go To Zero on All Axes</button>
+                                <button class="btn btn-xs btn-default jogzerooutm " data-toggle="popover" data-placement="top"
+                                    data-title="Set Machine Zero on All Axes"
+                                    data-content="G28.3 X0 Y0 Z0 A0<br/>Sets hardware zero (G53) to the current position.  Useful if machine does not have limit switches."
+                                    data-html="true" data-delay="800" data-trigger="hover" data-container="body"
+                                    style="background-color:#eef1ee">Zero Out All Axes</button>
+                                <button class="btn btn-xs btn-default joghomem " data-toggle="popover" data-placement="top"
+                                    data-title="Homing Sequence"
+                                    data-content="G28.2 X0 Y0 Z0 A0<br/>Runs homing cycle on all axes. MUST have home/limit switches"
+                                    data-html="true" data-delay="200" data-trigger="hover" data-container="body"
+                                    style="background-color:#eef1ee"><span class="glyphicon glyphicon-home"></span> Home All
+                                    Axes</button>
                             </div>
                         </td>
-                        <td class="col xcol-xs-2" style="border:0px green solid;padding-left:4px;">
-                            <div class="btn-group-vertical" style="margin-right:-0px;">
-
-                                <!-- <div class="btn-group">
-                                <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"  style="padding: 3px 2px;" > <span class="caret"></span>
-                            
-                                </button>
-                                <ul class="dropdown-menu xpull-right" role="menu">
-                                    <li role="presentation" class="dropdown-header">Jogging Algorithm</li>
-                                    <li><a href="javascript:" class="alert-info jogviaincr">Jog via Sending Increments then Feedhold</a></li>
-                                    <li><a href="javascript:" class="jogvialongmove">Jog via Sending Single Long Move then Feedhold</a></li>
-                                </ul>
-                            </div> -->
-                                <!-- <button id="com-chilipeppr-widget-robot-axes-jog" class="btn btn-default dbltall" style="padding: 8px 4px;" data-toggle="popover" data-placement="auto" data-title="Jog Shortcut Keys" data-content="X+ : Left Arrow<br>X- : Right Arrow<br>Y+ : Up Arrow<br>Y- : Down Arrow<br>Z+ : Page Up<br>Z- : Page Down<br>Shift : 10x Move By<br>Ctrl (or Alt) : 100x Move By<br>Shift + Ctrl (or Alt) : 1,000x Move By"
-                                data-html="true" data-delay="200" data-trigger="hover" data-container="body"><span class="rotate90">Jog</span>
-                                </button> -->
-                            </div>
-                        </td>
-                        <!-- <td class="col xcol-xs-2" style="border:0px yellow solid;">
-                            <button class="btn btn-default jogxneg dbltall">X
-                                <br/><span class="glyphicon glyphicon-circle-arrow-left"></span>
-
-                            </button>
-                        </td> -->
-                        <!-- <td>
-                            <div class="btn-group-vertical" style="margin-right:-0px;">
-                                <button class="btn btn-default jogy">Y <span class="glyphicon glyphicon-circle-arrow-up"></span>
-                                </button>
-                                <button class="btn btn-default jogyneg ">Y <span class="glyphicon glyphicon-circle-arrow-down"></span>
-                                </button>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="btn btn-default jogx dbltall">X
-                                <br/><span class="glyphicon glyphicon-circle-arrow-right"></span>
-                            </button>
-                        </td>
-                        <td>
-                            <div class="btn-group-vertical">
-                                <button class="btn btn-default jogz ">Z <span class="glyphicon glyphicon-plus-sign"></span>
-                                </button>
-                                <button class="btn btn-default jogzneg ">Z <span class="glyphicon glyphicon-minus-sign"></span>
-                                </button>
-                            </div>
-                        </td> -->
-                        <td class="hidden" style="">
-                            <button type="button" class="btn btn-lg btn-default btnShowTouchJog btnToggleShowTouchJog" style="padding:0 10px;">
-                                <svg width="38px" height="38px" viewBox="0 0 16 15" style="margin-bottom:-5px;">
-                                    <g id="layer1" inkscape:label="Layer 1" inkscape:groupmode="layer">
-                                        <rect style="fill:#c7c7c7;fill-opacity:1" id="rect2995" width="11.895755" height="7.6640639" x="-7.9218755" y="8.1015425" transform="matrix(0.80452054,-0.59392483,0.80452054,0.59392483,0,0)" />
-                                        <path style="fill:#000000;fill-opacity:1;stroke:none" d="M 12.012025,5.1134737 9.0594827,5.1513007 12.012026,7.369192 z" id="path4975" inkscape:connector-curvature="0" sodipodi:nodetypes="cccc" />
-                                        <rect transform="matrix(0.80452054,-0.59392483,0.80452054,0.59392483,0,0)" y="11.336672" x="-6.1134734" height="0.98116386" width="1.5229107" id="rect4987" style="fill:#000000;fill-opacity:1" />
-                                        <rect style="fill:#000000;fill-opacity:1" id="rect4989" width="1.5229107" height="0.98116386" x="-3.4123509" y="11.248804" transform="matrix(0.80452054,-0.59392483,0.80452054,0.59392483,0,0)" />
-                                        <rect transform="matrix(0.80452054,-0.59392483,0.80452054,0.59392483,0,0)" y="11.224115" x="-1.1307598" height="0.98116386" width="1.5229107" id="rect4991" style="fill:#000000;fill-opacity:1" />
-                                    </g>
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="padding-left:4px;padding-top:2px;">
+                
+                
+                        <td xcolspan="7" style="text-align:right;padding:0;">
                             <div class="btn-group jogincrements-horiz dropup " style="">
                                 <button class="btn btn-default btn-xs jogincr1 hilite">1000</button>
                                 <button class="btn btn-default btn-xs jogincrpt1 ">100</button>
@@ -278,36 +250,47 @@
                                 <button class="btn btn-default btn-xs jogincrpt001 ">1</button>
                                 <button class="btn btn-default btn-xs jogincrCustomBtn ">Custom <code class="jogincrCustomVal">50</code>
                                 </button>
-                                <button type="button" class="btn btn-xs btn-default dropdown-toggle jogincrCustomDropUpBtn" data-toggle="dropdown" aria-expanded="false"> <span class="caret"></span>
-
+                                <button type="button" class="btn btn-xs btn-default dropdown-toggle jogincrCustomDropUpBtn"
+                                    data-toggle="dropdown" aria-expanded="false"> <span class="caret"></span>
+                
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-right jogincrCustomDropUpMenu" role="menu" style="padding:6px 8px;">
+                                <ul class="dropdown-menu dropdown-menu-right jogincrCustomDropUpMenu" role="menu"
+                                    style="padding:6px 8px;">
                                     <div class="input-group">
-                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput1" value="" placeholder="Custom Move By 1" /> <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default jogincrCustomSet jogincrCustomSet1">Set</button>
-                                </span>
-
+                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput1" value=""
+                                            placeholder="Custom Move By 1" /> <span class="input-group-btn">
+                                            <button type="button"
+                                                class="btn btn-default jogincrCustomSet jogincrCustomSet1">Set</button>
+                                        </span>
+                
                                     </div>
                                     <div class="input-group">
-                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput2" value="" placeholder="Custom Move By 2" /> <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default jogincrCustomSet jogincrCustomSet2">Set</button>
-                                </span>
-
+                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput2" value=""
+                                            placeholder="Custom Move By 2" /> <span class="input-group-btn">
+                                            <button type="button"
+                                                class="btn btn-default jogincrCustomSet jogincrCustomSet2">Set</button>
+                                        </span>
+                
                                     </div>
                                     <div class="input-group">
-                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput3" value="" placeholder="Custom Move By 3" /> <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default jogincrCustomSet jogincrCustomSet3">Set</button>
-                                </span>
-
+                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput3" value=""
+                                            placeholder="Custom Move By 3" /> <span class="input-group-btn">
+                                            <button type="button"
+                                                class="btn btn-default jogincrCustomSet jogincrCustomSet3">Set</button>
+                                        </span>
+                
                                     </div>
                                     <div class="input-group">
-                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput4" value="" placeholder="Custom Move By 4" /> <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default jogincrCustomSet jogincrCustomSet4">Set</button>
-                                </span>
-
+                                        <input type="number" class="form-control jogincrCustomInput jogincrCustomInput4" value=""
+                                            placeholder="Custom Move By 4" /> <span class="input-group-btn">
+                                            <button type="button"
+                                                class="btn btn-default jogincrCustomSet jogincrCustomSet4">Set</button>
+                                        </span>
+                
                                     </div>
                                 </ul>
                             </div>
+                            <!-- Keyboard Jog: Left/Right Arrow - Wrist3, Up/Down Arrow - Wrist2 -->
                         </td>
                     </tr>
                 </table>

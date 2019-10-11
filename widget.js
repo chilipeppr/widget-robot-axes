@@ -189,6 +189,14 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     if ("Temp" in payload.Tag.Stat) {
                         el.find(".xyz-temp-c").text(payload.Tag.Stat.Temp);
                     }
+                    if ("Freq" in payload.Tag.Stat) {
+                        el.find(".xyz-hertz").text(payload.Tag.Stat.Freq);
+                    } else {
+                        el.find(".xyz-hertz").text("-");
+                    }
+                    if ("State" in payload.Tag.Stat) {
+                        el.find(".xyz-state").text(payload.Tag.Stat.State);
+                    }
                 }
             } else {
                 console.error("No name in payload");
@@ -237,6 +245,10 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                 
                 var clone = elTmplt.clone();
 
+                // if you click the axes row, hilite it to indicate it has jogging focus
+                // clone.click(this.onPerAxisClick.bind(this));
+                clone.attr("data-id", name);
+
                 // pencil hover
                 // clone.hover(this.pencilOnMouseover.bind(this), this.pencilOnMouseout.bind(this));
                 var posEl = clone.find(".widget-robot-axes-pos");
@@ -248,6 +260,10 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
                     .attr("data-id", name)
                     .keyup(this.perAxisPosInputKeypress.bind(this))
                     .blur(this.onPerAxisPosBlur.bind(this));
+                // get input text box where we enter the Gcode position
+                // var posInputEl = clone.find(".xyz-stepentry input");
+                // posInputEl.focusout(this.onPerAxisPosBlur.bind(this));
+                // console.log("posInputEl:", posInputEl);
 
                 clone.attr("id", "com-chilipeppr-widget-robot-axes-" + name);
                 clone.find('.widget-robot-axes-img').css('background-image', "url('" + prefix + name + ".jpg')");
@@ -276,6 +292,19 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
             }
             
             elTmplt.addClass("hidden");
+        },
+        onPerAxisClick: function(evt) {
+            var el = $(evt.currentTarget);
+            var name = el.attr("data-id");
+            console.log("Got onPerAxisClick. name:", name, "evt:", evt);
+            // show the jog hilite box
+            el.find(".xyz-glowbox").removeClass("hidden");
+            // start capturing keyboard input so can jog
+            el.keydown(function(evt){
+                console.log("got per axis row keydown. evt:", evt);
+            });
+            el.focus();
+            console.log("attached keydown evt");
         },
         perAxisPosInputKeypress: function(evt) {
             console.log("Got perAxisPosInputKeypress. evt:", evt);
@@ -309,10 +338,12 @@ cpdefine("inline:com-chilipeppr-widget-robot-axes", ["chilipeppr_ready", "jquery
         },
         onPerAxisPosBlur: function(evt) {
             console.log("Got onPerAxisPosBlur. evt:", evt);
-            var el = $(evt.currentTarget);
+            var el = $(evt.currentTarget); 
+            console.log("onPerAxisPosBlur el:", el);
             // var id = el.data("id");
             // console.log("id:", id);
-            el.find(".xyz-stepentry").addClass("hidden");
+            el.parent().parent().find(".xyz-stepentry").addClass("hidden");
+            el.find(".xyz-glowbox").addClass("hidden");
         },
         onPerAxisGotoZero: function(evt) {
             console.log("Got onPerAxisGotoZero. evt:", evt);
